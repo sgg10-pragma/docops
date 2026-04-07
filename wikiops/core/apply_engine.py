@@ -8,4 +8,4 @@ class ApplyEngine:
 
     def apply(self, provider: DocumentProvider, change_set: ChangeSet) -> ApplyResult:
         """Applies the given change set using the provided document provider."""
-        return provider.apply_changeset(change_set)
+        return provider.apply_changes(change_set)
