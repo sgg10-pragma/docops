@@ -106,8 +106,6 @@ class WarningMessage(BaseMessage):
 class NoteMessage(BaseMessage):
     """Structured note message emitted during planning."""
 
-    ...
-
 
 class BaseOperation(BaseModel):
     """Base mutation operation."""
