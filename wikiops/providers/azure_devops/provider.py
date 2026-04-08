@@ -7,20 +7,21 @@ import httpx
 from pydantic import Field
 
 from wikiops.core.exceptions import ConfigurationError
-from wikiops.contracts.provider import ProviderSettings
-
-from wikiops.domain.context import ExecutionContext
-from wikiops.domain.results import AppliedOperationResult, ApplyResult, OperationStatus
-from wikiops.domain.models import (
-    RefKind,
-    Document,
+from wikiops_sdk.contracts import ProviderSettings
+from wikiops_sdk.domain import (
+    AppliedOperationResult,
+    ApplyResult,
     ChangeSet,
+    CreateChildDocumentOperation,
+    CreateDocumentOperation,
+    Document,
     DocumentRef,
     DocumentVersion,
+    ExecutionContext,
+    OperationStatus,
     ProviderCapability,
-    CreateDocumentOperation,
+    RefKind,
     UpdateDocumentOperation,
-    CreateChildDocumentOperation,
 )
 
 
@@ -273,13 +274,11 @@ class AzureDevOpsWikiProvider:
                     AppliedOperationResult(
                         operation_id=op.operation_id,
                         status=OperationStatus.FAILED,
-                        error=str(exc),
+                        message=str(exc),
                     )
                 )
 
-            return ApplyResult(
-                provider_name=self.settings.provider_name, results=results
-            )
+        return ApplyResult(provider_name=self.settings.provider_name, results=results)
 
 
 class AzureDevOpsWikiProviderFactory:

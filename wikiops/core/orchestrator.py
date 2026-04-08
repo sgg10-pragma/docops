@@ -1,8 +1,7 @@
 from uuid import uuid4
 from typing import Dict, List, Tuple, Optional
 
-from wikiops.domain.results import ApplyResult
-from wikiops.domain.context import ExecutionContext
+from wikiops_sdk.domain import ApplyResult, ExecutionContext
 
 from wikiops.core.diff_engine import DiffEngine
 from wikiops.core.apply_engine import ApplyEngine
@@ -70,7 +69,7 @@ class DefaultDocumentationOrchestrator:
 
         # Determine plugin config for the profile, falling back to empty dict if not defined
         profile_plugin_config = (
-            profile.plugins.get(plugin.manifest.id)
+            profile.plugins.get(plugin.manifest.plugin_id)
             or profile.plugins.get(plugin_id)
             or {}
         )
@@ -92,7 +91,7 @@ class DefaultDocumentationOrchestrator:
         documents = self.document_loader.load(provider, resolved_refs)
 
         ctx = ExecutionContext(
-            execution_id=str(uuid4()),
+            run_id=str(uuid4()),
             profile_name=profile_name,
             provider_name=profile.provider,
             dry_run=dry_run,

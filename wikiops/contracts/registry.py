@@ -1,7 +1,6 @@
 from typing import Protocol, runtime_checkable
 
-from wikiops.contracts.provider import DocumentProvider
-from wikiops.contracts.plugin import DocumentationPlugin
+from wikiops_sdk.contracts import DocumentationPlugin, DocumentProvider
 
 
 @runtime_checkable

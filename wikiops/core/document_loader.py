@@ -1,7 +1,7 @@
 from typing import Dict
 
-from wikiops.contracts.provider import DocumentProvider
-from wikiops.domain.models import Document, DocumentRef
+from wikiops_sdk.contracts import DocumentProvider
+from wikiops_sdk.domain import Document, DocumentRef
 
 
 class DocumentLoader:

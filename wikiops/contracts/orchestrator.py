@@ -1,7 +1,6 @@
 from typing import Protocol
 
-from wikiops.domain.models import ChangeSet
-from wikiops.domain.results import ApplyResult
+from wikiops_sdk.domain import ApplyResult, ChangeSet
 
 
 class PlanningResult(ChangeSet):

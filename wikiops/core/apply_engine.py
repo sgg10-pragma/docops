@@ -1,6 +1,5 @@
-from wikiops.domain.models import ChangeSet
-from wikiops.domain.results import ApplyResult
-from wikiops.contracts.provider import DocumentProvider
+from wikiops_sdk.contracts import DocumentProvider
+from wikiops_sdk.domain import ApplyResult, ChangeSet
 
 
 class ApplyEngine:

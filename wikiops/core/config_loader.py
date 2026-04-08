@@ -4,8 +4,8 @@ from typing import Any, Dict, Union
 import yaml
 from pydantic import BaseModel, Field
 
-from wikiops.domain.models import DocumentRef
 from wikiops.core.exceptions import ConfigurationError
+from wikiops_sdk.domain import DocumentRef
 
 
 class ProviderDefinition(BaseModel):

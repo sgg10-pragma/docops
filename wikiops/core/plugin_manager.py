@@ -2,7 +2,7 @@ from typing import Dict, List
 from importlib.metadata import entry_points
 
 from wikiops.core.exceptions import ConfigurationError
-from wikiops.contracts.plugin import DocumentationPlugin
+from wikiops_sdk.contracts import DocumentationPlugin
 
 
 class PluginManager:
