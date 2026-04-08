@@ -9,7 +9,8 @@ description = "Extensible CLI to automate documentation in wiki platforms (Azure
 authors = [
     {name = "Sebastian Granda Gallego",email = "sgg10.develop@gmail.com"}
 ]
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
 dependencies = [
@@ -19,6 +20,12 @@ dependencies = [
     "httpx (>=0.28.1,<0.29.0)",
     "wikiops-sdk (>=1.0.0,<2.0.0)"
 ]
+
+[project.urls]
+Homepage = "https://github.com/sgg10/wikiops"
+Repository = "https://github.com/sgg10/wikiops"
+Documentation = "https://github.com/sgg10/wikiops/tree/main/docs"
+Issues = "https://github.com/sgg10/wikiops/issues"
 
 [project.scripts]
 wikiops = "wikiops.cli.app:app"
