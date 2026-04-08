@@ -1,7 +1,7 @@
 from uuid import uuid4
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple
 
-from wikiops_sdk.domain import ApplyResult, ExecutionContext
+from wikiops_sdk.domain import ApplyResult, ChangeSet, ExecutionContext
 
 from wikiops.core.diff_engine import DiffEngine
 from wikiops.core.apply_engine import ApplyEngine
@@ -11,8 +11,6 @@ from wikiops.core.provider_manager import ProviderManager
 from wikiops.core.reference_resolver import ReferenceResolver
 from wikiops.core.config_loader import AppConfig, ConfigLoader
 from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
-
-from wikiops.contracts.orchestrator import PlanningResult
 
 
 class DefaultDocumentationOrchestrator:
@@ -34,7 +32,7 @@ class DefaultDocumentationOrchestrator:
         plugin_id: str,
         raw_input: Dict,
         dry_run: bool = True,
-    ) -> Tuple[AppConfig, ExecutionContext, PlanningResult]:
+    ) -> Tuple[AppConfig, ExecutionContext, ChangeSet]:
         profile = config.profiles.get(profile_name)
         if not profile:
             raise ConfigurationError(
@@ -107,11 +105,11 @@ class DefaultDocumentationOrchestrator:
 
         change_set = plugin.plan(ctx)
 
-        return config, ctx, PlanningResult.model_validate(change_set.model_dump())
+        return config, ctx, ChangeSet.model_validate(change_set.model_dump())
 
     def plan(
         self, profile_name: str, plugin_id: str, raw_input: Dict, dry_run: bool = True
-    ) -> PlanningResult:
+    ) -> ChangeSet:
         raise NotImplementedError(
             "Planning without config file is not supported. Use plan_from_file instead."
         )
@@ -123,7 +121,7 @@ class DefaultDocumentationOrchestrator:
         plugin_id: str,
         raw_input: Dict,
         dry_run: bool = True,
-    ) -> Tuple[AppConfig, ExecutionContext, PlanningResult, str]:
+    ) -> Tuple[AppConfig, ExecutionContext, ChangeSet, str]:
         config = self.config_loader.load(config_path)
         plan = self._plan_internal(
             config, profile_name, plugin_id, raw_input, dry_run=dry_run
@@ -142,8 +140,8 @@ class DefaultDocumentationOrchestrator:
         profile_name: str,
         plugin_id: str,
         raw_input: Dict,
-    ) -> Tuple[PlanningResult, ApplyResult, str]:
-        config, ctx, change_set, diff = self.plan_from_file(
+    ) -> Tuple[ChangeSet, ApplyResult, str]:
+        config, _ctx, change_set, diff = self.plan_from_file(
             config_path=config_path,
             profile_name=profile_name,
             plugin_id=plugin_id,

@@ -1,8 +1,16 @@
-from typing import Dict, List
+from typing import Any, Dict, List, Protocol
 from importlib.metadata import entry_points
 
 from wikiops.core.exceptions import ConfigurationError
 from wikiops_sdk.contracts import DocumentProvider
+
+
+class ProviderFactory(Protocol):
+    """Host-local factory contract for provider entry points."""
+
+    provider_id: str
+
+    def create(self, settings: Dict[str, Any]) -> DocumentProvider: ...
 
 
 class ProviderManager:
@@ -11,7 +19,7 @@ class ProviderManager:
     ENTRYPOINT_GROUP = "wikiops.providers"
 
     def __init__(self) -> None:
-        self._factories: Dict[str, object] = {}
+        self._factories: Dict[str, ProviderFactory] = {}
         self._loaded = False
 
     def load(self) -> None:
