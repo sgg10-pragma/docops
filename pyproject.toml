@@ -28,5 +28,5 @@ azure_devops_wiki = "wikiops.providers.azure_devops:AzureDevOpsWikiProviderFacto
 
 [tool.poetry]
 packages = [
-    {include = "wikiops"}
+    {include = "wikiops", from = "src"}
 ]
