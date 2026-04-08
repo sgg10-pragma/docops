@@ -1,0 +1,60 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "wikiops"
+version = "1.0.0"
+description = "Extensible CLI to automate documentation in wiki platforms (Azure DevOps, Confluence, etc.) using Markdown. Built on a plugin and provider architecture, it enables generating, updating, and structuring documentation as code."
+authors = [
+    {name = "Sebastian Granda Gallego",email = "sgg10.develop@gmail.com"}
+]
+license = "MIT"
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "pydantic (>=2.12.5,<3.0.0)",
+    "typer (>=0.24.1,<0.25.0)",
+    "pyyaml (>=6.0.3,<7.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "wikiops-sdk (>=1.0.0,<2.0.0)"
+]
+
+[project.urls]
+Homepage = "https://github.com/sgg10/wikiops"
+Repository = "https://github.com/sgg10/wikiops"
+Documentation = "https://github.com/sgg10/wikiops/tree/main/docs"
+Issues = "https://github.com/sgg10/wikiops/issues"
+
+[project.scripts]
+wikiops = "wikiops.cli.app:app"
+
+[project.entry-points."wikiops.providers"]
+azure_devops_wiki = "wikiops.providers.azure_devops:AzureDevOpsWikiProviderFactory"
+
+[tool.poetry]
+packages = [
+    {include = "wikiops", from = "src"}
+]
+
+[dependency-groups]
+test = [
+    "pytest (>=9.0.3,<10.0.0)",
+    "pytest-cov (>=6.0.0,<7.0.0)"
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers -ra --cov=wikiops --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=90"
+testpaths = ["tests"]
+pythonpath = ["src"]
+xfail_strict = true
+required_plugins = ["pytest-cov"]
+
+[tool.coverage.run]
+branch = true
+source = ["wikiops"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
