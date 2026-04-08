@@ -1,6 +1,7 @@
 from uuid import uuid4
 from typing import Dict, Tuple
 
+from wikiops_sdk import ensure_python_compatible
 from wikiops_sdk.domain import ApplyResult, ChangeSet, ExecutionContext
 
 from wikiops.core.diff_engine import DiffEngine
@@ -17,6 +18,7 @@ class DefaultDocumentationOrchestrator:
     """Default implementation of the orchestration flow."""
 
     def __init__(self) -> None:
+        ensure_python_compatible()
         self.config_loader = ConfigLoader()
         self.plugin_manager = PluginManager()
         self.provider_manager = ProviderManager()
@@ -49,7 +51,6 @@ class DefaultDocumentationOrchestrator:
         provider = self.provider_manager.create(
             provider_definition.type, provider_definition.settings
         )
-        provider.validate_settings()
 
         plugin = self.plugin_manager.get(plugin_id)
 

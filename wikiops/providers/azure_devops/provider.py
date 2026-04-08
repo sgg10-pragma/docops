@@ -285,9 +285,15 @@ class AzureDevOpsWikiProviderFactory:
     """Factory for Azure DevOps Wiki providers."""
 
     provider_id = AzureDevOpsWikiProvider.provider_id
+    settings_model = PatAzureDevOpsProviderSettings
 
-    def create(self, settings: Dict) -> AzureDevOpsWikiProvider:
-        typed_settings = PatAzureDevOpsProviderSettings(**settings)
+    def create(
+        self, settings: PatAzureDevOpsProviderSettings | Dict[str, Any]
+    ) -> AzureDevOpsWikiProvider:
+        typed_settings = (
+            settings
+            if isinstance(settings, PatAzureDevOpsProviderSettings)
+            else self.settings_model.model_validate(settings)
+        )
         provider = AzureDevOpsWikiProvider(typed_settings)
-        provider.validate_settings()
         return provider

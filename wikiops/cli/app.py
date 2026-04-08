@@ -35,5 +35,47 @@ def list_providers() -> None:
         typer.echo(f"- {provider_type}")
 
 
+@app.command("run")
+def run(
+    config: str = typer.Option(
+        ..., "--config", "-c", help="Path to the YAML config file."
+    ),
+    profile: str = typer.Option(
+        ..., "--profile", "-p", help="Profile name to execute."
+    ),
+    plugin: str = typer.Option(
+        ..., "--plugin", help="Plugin identifier or entry point name."
+    ),
+    input: str = typer.Option(
+        ..., "--input", "-i", help="Path to the YAML input file."
+    ),
+    apply: bool = typer.Option(False, "--apply", help="Persist the planned changes."),
+) -> None:
+    """Plan or apply a documentation use case."""
+
+    orchestrator = DefaultDocumentationOrchestrator()
+    raw_input = _load_yaml(input)
+
+    if apply:
+        change_set, apply_result, diff = orchestrator.apply_from_file(
+            config, profile, plugin, raw_input
+        )
+        typer.echo("=== CHANGESET ===")
+        typer.echo(change_set.model_dump_json(indent=2))
+        typer.echo("\n=== DIFF ===")
+        typer.echo(diff or "(No diff available)")
+        typer.echo("\n=== APPLY RESULT ===")
+        typer.echo(apply_result.model_dump_json(indent=2))
+        raise typer.Exit(code=1 if apply_result.has_failures() else 0)
+
+    _, _, change_set, diff = orchestrator.plan_from_file(
+        config, profile, plugin, raw_input, dry_run=True
+    )
+    typer.echo("=== CHANGESET ===")
+    typer.echo(change_set.model_dump_json(indent=2))
+    typer.echo("\n=== DIFF ===")
+    typer.echo(diff or "(No diff generated)")
+
+
 if __name__ == "__main__":
     app()
