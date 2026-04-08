@@ -30,3 +30,24 @@ azure_devops_wiki = "wikiops.providers.azure_devops:AzureDevOpsWikiProviderFacto
 packages = [
     {include = "wikiops", from = "src"}
 ]
+
+[dependency-groups]
+test = [
+    "pytest (>=9.0.3,<10.0.0)",
+    "pytest-cov (>=6.0.0,<7.0.0)"
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers -ra --cov=wikiops --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=90"
+testpaths = ["tests"]
+pythonpath = ["src"]
+xfail_strict = true
+required_plugins = ["pytest-cov"]
+
+[tool.coverage.run]
+branch = true
+source = ["wikiops"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
