@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from wikiops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
 from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
@@ -27,6 +27,54 @@ class DemoPluginConfig(PluginConfigModel):
 
 class DemoPluginInput(PluginInputModel):
     title: str
+
+
+class PartialInput(PluginInputModel):
+    title: str | None = None
+    description: str | None = None
+    execution_date: str | None = None
+    execution_time: str | None = None
+    sources: list[str] | None = None
+    components: list[str] | None = None
+    developer: str | None = None
+
+
+class InfoPatch(BaseModel):
+    frequency: str | None = None
+    description: str | None = None
+    execution_date: str | None = None
+    execution_time: str | None = None
+    sources: list[str] | None = None
+    components: list[str] | None = None
+    developer: str | None = None
+
+
+class PatchInput(BaseModel):
+    info: InfoPatch | None = None
+
+
+class NestedPartialInput(PluginInputModel):
+    patch: PatchInput
+
+
+class RowUpdate(BaseModel):
+    key: str
+    description: str | None = None
+    domain: str | None = None
+    category: str | None = None
+    partitioning: str | None = None
+
+
+class RowsPatch(BaseModel):
+    update: list[RowUpdate] = Field(default_factory=list)
+
+
+class RowsInputPatch(BaseModel):
+    rows: RowsPatch | None = None
+
+
+class ListPartialInput(PluginInputModel):
+    patch: RowsInputPatch
 
 
 class RecordingPlugin:
@@ -62,6 +110,18 @@ class RecordingPlugin:
                 )
             ],
         )
+
+
+class GenericRecordingPlugin(RecordingPlugin):
+    def __init__(self, input_model: type[PluginInputModel]) -> None:
+        super().__init__()
+        self._input_model = input_model
+
+    def get_input_model(self):
+        return self._input_model
+
+    def required_ref_aliases(self, plugin_config, input_data):
+        return {"inventory"}
 
 
 class CapabilityHungryPlugin(RecordingPlugin):
@@ -127,6 +187,48 @@ def _build_config(ref: DocumentRef, plugins: dict[str, dict[str, object]]) -> Ap
                 plugins=plugins,
             )
         },
+    )
+
+
+def _plan_with_plugin(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+    plugin: RecordingPlugin,
+    raw_input: dict[str, object],
+) -> tuple[AppConfig, object, ChangeSet]:
+    ref = doc_ref_factory(provider="default", path="/inventory")
+    resolved_ref = doc_ref_factory(provider="default", path="/resolved")
+    document = document_factory(ref=resolved_ref, title="Inventory", content="# Current\n")
+    config = _build_config(ref, {})
+    provider = DemoProvider(
+        {ProviderCapability.READ_DOCUMENT},
+        document,
+        resolved_ref=resolved_ref,
+    )
+    orchestrator = DefaultDocumentationOrchestrator()
+    monkeypatch.setattr(
+        "wikiops.core.orchestrator.uuid4",
+        lambda: UUID("11111111-1111-1111-1111-111111111111"),
+    )
+    orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
+    orchestrator.reference_resolver = SimpleNamespace(
+        resolve_alias=lambda profile, alias: profile.refs[alias]
+    )
+    orchestrator.document_loader = SimpleNamespace(
+        load=lambda _provider, refs: {
+            "inventory": document_factory(
+                ref=refs["inventory"], title="Inventory", content="# Current\n"
+            )
+        }
+    )
+
+    return orchestrator._plan_internal(
+        config,
+        "default",
+        plugin.manifest.plugin_id,
+        raw_input,
     )
 
 
@@ -242,6 +344,102 @@ def test_plan_internal_builds_context_and_uses_plugin_config_fallbacks(
     assert plugin.received_ctx == ctx
     assert change_set.plugin_id == "demo.plugin"
     assert len(change_set.operations) == 1
+
+
+def test_plan_internal_preserves_omitted_optional_fields_in_input_data(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = GenericRecordingPlugin(PartialInput)
+
+    _, ctx, _ = _plan_with_plugin(
+        monkeypatch,
+        doc_ref_factory,
+        document_factory,
+        plugin,
+        {"title": "Example"},
+    )
+
+    assert ctx.input_data == {"title": "Example"}
+    assert plugin.received_ctx.input_data == {"title": "Example"}
+
+
+def test_plan_internal_preserves_partial_nested_objects_in_input_data(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = GenericRecordingPlugin(NestedPartialInput)
+
+    _, ctx, _ = _plan_with_plugin(
+        monkeypatch,
+        doc_ref_factory,
+        document_factory,
+        plugin,
+        {"patch": {"info": {"frequency": "Semanal"}}},
+    )
+
+    assert ctx.input_data == {"patch": {"info": {"frequency": "Semanal"}}}
+    assert plugin.received_ctx.input_data == {
+        "patch": {"info": {"frequency": "Semanal"}}
+    }
+
+
+def test_plan_internal_preserves_partial_objects_inside_lists_in_input_data(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = GenericRecordingPlugin(ListPartialInput)
+
+    _, ctx, _ = _plan_with_plugin(
+        monkeypatch,
+        doc_ref_factory,
+        document_factory,
+        plugin,
+        {
+            "patch": {
+                "rows": {
+                    "update": [
+                        {"key": "A", "description": "nuevo texto"},
+                    ]
+                }
+            }
+        },
+    )
+
+    assert ctx.input_data == {
+        "patch": {
+            "rows": {
+                "update": [
+                    {"key": "A", "description": "nuevo texto"},
+                ]
+            }
+        }
+    }
+    assert plugin.received_ctx.input_data == ctx.input_data
+
+
+def test_plan_internal_preserves_explicit_nulls_in_input_data(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = GenericRecordingPlugin(NestedPartialInput)
+
+    _, ctx, _ = _plan_with_plugin(
+        monkeypatch,
+        doc_ref_factory,
+        document_factory,
+        plugin,
+        {"patch": {"info": {"description": None}}},
+    )
+
+    assert ctx.input_data == {"patch": {"info": {"description": None}}}
+    assert plugin.received_ctx.input_data == {
+        "patch": {"info": {"description": None}}
+    }
 
 
 def test_plan_and_apply_raise_without_config_file() -> None:

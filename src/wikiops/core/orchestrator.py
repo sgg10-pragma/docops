@@ -89,6 +89,8 @@ class DefaultDocumentationOrchestrator:
         # Load documents based on resolved references
         documents = self.document_loader.load(provider, resolved_refs)
 
+        input_data = input_model.model_dump(exclude_unset=True)
+
         ctx = ExecutionContext(
             run_id=str(uuid4()),
             profile_name=profile_name,
@@ -97,7 +99,7 @@ class DefaultDocumentationOrchestrator:
             refs=resolved_refs,
             documents=documents,
             plugin_config=plugin_config_model.model_dump(),
-            input_data=input_model.model_dump(),
+            input_data=input_data,
             runtime_vars={
                 "plugin_id": plugin.manifest.plugin_id,
                 "provider_id": provider.provider_id,
