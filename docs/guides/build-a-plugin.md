@@ -90,7 +90,9 @@ During execution, the host:
 4. validates it through `get_input_model()`
 5. stores normalized dictionaries in `ExecutionContext.plugin_config` and `ExecutionContext.input_data`
 
-That means `plan(ctx)` currently receives normalized dictionaries inside the context, not the original typed model instances.
+That means `plan(ctx)` currently receives dictionaries inside the context, not the original typed model instances.
+
+`ExecutionContext.input_data` preserves only fields explicitly provided by the user input. Omitted optional fields stay omitted, while explicit `null` values are preserved as `None`.
 
 ## Reference Resolution Flow
 

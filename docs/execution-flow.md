@@ -104,6 +104,8 @@ It validates:
 
 The host stores normalized dictionaries in the `ExecutionContext` rather than passing the original Pydantic model instances into `plan(ctx)`.
 
+For runtime input, the host preserves the user's intent when serializing into `ExecutionContext.input_data`: omitted optional fields stay omitted, while explicit `null` values remain `None`.
+
 ### 9. Required Ref Aliases Are Resolved
 
 The plugin declares required aliases through `required_ref_aliases(...)`.
@@ -132,7 +134,7 @@ The host constructs an SDK `ExecutionContext` that includes:
 - resolved refs
 - loaded documents
 - normalized plugin config
-- normalized input data
+- normalized input data that preserves omitted-vs-null input semantics
 - host runtime vars such as plugin and provider identity
 
 ### 12. The Plugin Plans Changes
