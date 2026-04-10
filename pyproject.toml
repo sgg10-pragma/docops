@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "wikiops"
-version = "1.0.0"
+version = "1.0.1"
 description = "Extensible CLI to automate documentation in wiki platforms (Azure DevOps, Confluence, etc.) using Markdown. Built on a plugin and provider architecture, it enables generating, updating, and structuring documentation as code."
 authors = [
     {name = "Sebastian Granda Gallego",email = "sgg10.develop@gmail.com"}
