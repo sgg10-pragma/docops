@@ -72,6 +72,7 @@ def assert_cli_behavior() -> None:
     if help_result.returncode != 0:
         raise RuntimeError(help_result.stderr or help_result.stdout)
     assert "WikiOps CLI" in help_result.stdout
+    assert "docs" in help_result.stdout
 
     providers_result = run_cli("providers")
     if providers_result.returncode != 0:
@@ -81,6 +82,11 @@ def assert_cli_behavior() -> None:
     plugins_result = run_cli("plugins")
     if plugins_result.returncode != 0:
         raise RuntimeError(plugins_result.stderr or plugins_result.stdout)
+
+    docs_result = run_cli("docs", "get", "--help")
+    if docs_result.returncode != 0:
+        raise RuntimeError(docs_result.stderr or docs_result.stdout)
+    assert "Fetch and print the current state of a document." in docs_result.stdout
 
 
 def assert_distribution_metadata() -> None:

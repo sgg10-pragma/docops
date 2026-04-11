@@ -12,14 +12,17 @@ Defines the public CLI entry point.
 
 - parse CLI arguments
 - load input YAML
-- invoke the default orchestrator
+- invoke the default orchestrator for plan/apply runs
+- invoke `DocumentReader` for read-only document inspection
 - print `ChangeSet`, diff, and `ApplyResult` output
+- print read-only document output as JSON or Markdown
 - determine the exit code for apply runs
 
 ### Interactions
 
 - instantiates `DefaultDocumentationOrchestrator`
-- delegates all plan and apply logic to the core runtime
+- instantiates `DocumentReader`
+- delegates plan, apply, and read-only inspection logic to the core runtime
 
 ## `wikiops.core.orchestrator`
 
@@ -109,6 +112,27 @@ Expose plugin package files through the SDK resource contract.
 ### Current Convention
 
 Paths are relative to the plugin package root, not to a forced `resources/` root.
+
+## `wikiops.core.document_reader`
+
+### Purpose
+
+Fetch the current state of a single document through the selected provider.
+
+### Responsibilities
+
+- validate Python runtime compatibility
+- load YAML configuration
+- create the provider
+- validate read capabilities for the requested selector
+- resolve alias or path selectors into a `DocumentRef`
+- fetch the current document payload
+- build a user-facing link when supported
+
+### Key Models
+
+- `DocumentReadResult`
+- `DocumentReader`
 
 ## `wikiops.core.provider_manager`
 

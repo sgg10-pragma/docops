@@ -3,6 +3,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from wikiops.cli import app as cli_app
+from wikiops.core.document_reader import DocumentReadResult
 from wikiops_sdk.domain import ApplyResult, AppliedOperationResult, OperationStatus
 
 
@@ -52,6 +53,137 @@ def test_providers_command_lists_discovered_provider_types(
     assert result.exit_code == 0
     assert "- alpha" in result.stdout
     assert "- omega" in result.stdout
+
+
+def test_docs_get_command_prints_json_output(
+    cli_runner,
+    monkeypatch,
+    document_factory,
+    doc_ref_factory,
+) -> None:
+    document = document_factory(
+        ref=doc_ref_factory(provider="default", path="/Docs/Page"),
+        title="Page",
+        content="# Page\n",
+    )
+    read_result = DocumentReadResult(
+        profile_name="default",
+        provider_name="default",
+        selector_kind="alias",
+        selector_value="inventory",
+        link="https://example.test/docs/page",
+        document=document,
+    )
+
+    class FakeReader:
+        def get_from_file(self, config, profile, alias=None, path=None):
+            assert config == "config.yaml"
+            assert profile == "default"
+            assert alias == "inventory"
+            assert path is None
+            return read_result
+
+    monkeypatch.setattr(cli_app, "DocumentReader", FakeReader)
+
+    result = cli_runner.invoke(
+        cli_app.app,
+        [
+            "docs",
+            "get",
+            "-c",
+            "config.yaml",
+            "-p",
+            "default",
+            "--alias",
+            "inventory",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert '"selector_kind": "alias"' in result.stdout
+    assert '"selector_value": "inventory"' in result.stdout
+    assert '"title": "Page"' in result.stdout
+
+
+def test_docs_get_command_prints_markdown_output(
+    cli_runner,
+    monkeypatch,
+    document_factory,
+    doc_ref_factory,
+) -> None:
+    document = document_factory(
+        ref=doc_ref_factory(provider="default", path="/Docs/Page"),
+        title="Page",
+        content="# Page\n",
+    )
+    read_result = DocumentReadResult(
+        profile_name="default",
+        provider_name="default",
+        selector_kind="path",
+        selector_value="/Docs/Page",
+        link=None,
+        document=document,
+    )
+
+    class FakeReader:
+        def get_from_file(self, config, profile, alias=None, path=None):
+            assert config == "config.yaml"
+            assert profile == "default"
+            assert alias is None
+            assert path == "/Docs/Page"
+            return read_result
+
+    monkeypatch.setattr(cli_app, "DocumentReader", FakeReader)
+
+    result = cli_runner.invoke(
+        cli_app.app,
+        [
+            "docs",
+            "get",
+            "-c",
+            "config.yaml",
+            "-p",
+            "default",
+            "--path",
+            "/Docs/Page",
+            "--output",
+            "markdown",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert result.stdout == "# Page\n"
+
+
+def test_docs_get_command_requires_a_selector(cli_runner) -> None:
+    result = cli_runner.invoke(
+        cli_app.app,
+        ["docs", "get", "-c", "config.yaml", "-p", "default"],
+    )
+
+    assert result.exit_code == 2
+    assert "Exactly one of --alias or --path must be provided." in result.output
+
+
+def test_docs_get_command_rejects_multiple_selectors(cli_runner) -> None:
+    result = cli_runner.invoke(
+        cli_app.app,
+        [
+            "docs",
+            "get",
+            "-c",
+            "config.yaml",
+            "-p",
+            "default",
+            "--alias",
+            "inventory",
+            "--path",
+            "/Docs/Page",
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert "Exactly one of --alias or --path must be provided." in result.output
 
 
 def test_run_command_prints_plan_output(
