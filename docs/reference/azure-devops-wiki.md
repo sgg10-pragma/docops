@@ -74,6 +74,7 @@ The current provider advertises:
 - `UPDATE_DOCUMENT`
 - `CREATE_CHILD_DOCUMENT`
 - `BUILD_LINK`
+- `PUT_ASSET`
 - `RESOLVE_BY_PATH`
 - `HIERARCHICAL_PAGES`
 - `VERSION_CHECK`
@@ -113,6 +114,17 @@ The provider returns an SDK `Document` model.
 
 Builds a user-facing Azure DevOps Wiki URL from the page path.
 
+## Asset Behavior
+
+The provider can upload wiki attachments through the Azure DevOps Wiki attachments endpoint.
+
+Current asset behavior:
+
+- uploads use attachment storage under `/.attachments/`
+- stored names are rewritten with a short content hash suffix
+- the provider returns path-based asset refs
+- embeddable asset references are absolute wiki paths such as `/.attachments/logo--abcd1234.png`
+
 ## Apply Behavior
 
 The provider supports three planned operation types:
@@ -120,6 +132,8 @@ The provider supports three planned operation types:
 - `UpdateDocumentOperation`
 - `CreateDocumentOperation`
 - `CreateChildDocumentOperation`
+
+Host-managed asset uploads are applied before document mutations so logical `asset://...` references can be rewritten to Azure DevOps attachment paths.
 
 ### Update
 
@@ -162,7 +176,7 @@ The current provider is intentionally focused:
 - path-based refs only
 - PAT-based authentication only
 - one Azure DevOps Wiki endpoint family
-- no delete, move, rename, or attachment operations
+- no delete, move, or rename operations
 
 ## Related Documentation
 

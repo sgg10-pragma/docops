@@ -11,6 +11,7 @@ def test_from_entry_point_reads_packaged_resources(entry_point_factory) -> None:
     provider = PackagePluginResourceProvider.from_entry_point(entry_point)
 
     assert provider.read_text("templates/example.md") == "Hello from plugin resources.\n"
+    assert provider.read_bytes("resources/example.txt") == b"Hello from nested resources.\n"
 
 
 @pytest.mark.parametrize("value", ["", ".", "/absolute/path", "../escape"])

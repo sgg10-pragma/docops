@@ -4,10 +4,11 @@ This guide documents the current `wikiops` command-line interface.
 
 ## Command Surface
 
-The host currently exposes three commands:
+The host currently exposes four command entries:
 
 - `wikiops plugins`
 - `wikiops providers`
+- `wikiops docs get`
 - `wikiops run`
 
 ## `wikiops plugins`
@@ -39,6 +40,61 @@ poetry run wikiops providers
 ```
 
 Use this command to confirm that the built-in provider or any external provider package is discoverable.
+
+## `wikiops docs get`
+
+Fetches the current state of a single document through the provider configured for a profile.
+
+Required options:
+
+- `--config`, `-c`
+- `--profile`, `-p`
+- exactly one of `--alias` or `--path`
+
+Optional flags:
+
+- `--output` with `json` or `markdown`
+
+### Select By Alias
+
+Use `--alias` when the target document is already declared in `profile.refs`.
+
+Example:
+
+```bash
+poetry run wikiops docs get \
+  --config wikiops.yaml \
+  --profile default \
+  --alias handbook
+```
+
+### Select By Path
+
+Use `--path` for ad hoc reads when the selected provider supports path resolution.
+
+Example:
+
+```bash
+poetry run wikiops docs get \
+  --config wikiops.yaml \
+  --profile default \
+  --path "/engineering/platform/runbook"
+```
+
+### Output
+
+Default output is JSON so callers such as agents can consume the result predictably.
+
+Current JSON payload includes:
+
+- `profile_name`
+- `provider_name`
+- `selector_kind`
+- `selector_value`
+- `link`
+- `document`
+
+Use `--output markdown` when you only want the current page content.
 
 ## `wikiops run`
 
@@ -121,10 +177,11 @@ team_name: Platform
 
 1. Run `wikiops plugins`.
 2. Run `wikiops providers`.
-3. Prepare configuration and input YAML files.
-4. Run `wikiops run` in plan mode first.
-5. Inspect the `ChangeSet` and diff.
-6. Rerun with `--apply` when ready.
+3. Use `wikiops docs get` to inspect the current document state when needed.
+4. Prepare configuration and input YAML files.
+5. Run `wikiops run` in plan mode first.
+6. Inspect the `ChangeSet` and diff.
+7. Rerun with `--apply` when ready.
 
 ## Related Documentation
 

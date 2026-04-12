@@ -810,14 +810,14 @@ typing-extensions = ">=4.12.0"
 
 [[package]]
 name = "wikiops-sdk"
-version = "1.0.0"
+version = "1.1.0"
 description = "Public SDK for WikiOps plugins and integrations. Provides the shared contracts, domain models, compatibility rules, and extension interfaces needed to build providers and documentation plugins."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "wikiops_sdk-1.0.0-py3-none-any.whl", hash = "sha256:bd88898bccabddbe4a13aeccc50038f81b5d57b7e2c5480d35013eb1051e2ef0"},
-    {file = "wikiops_sdk-1.0.0.tar.gz", hash = "sha256:e4cd8b1f87769d476756395317139ab3c742751845aaed7e61017a0f0efca259"},
+    {file = "wikiops_sdk-1.1.0-py3-none-any.whl", hash = "sha256:eb6a922062e6f77a0d71cc7583e14306ee89471c1a2898b43b62c35975b0776e"},
+    {file = "wikiops_sdk-1.1.0.tar.gz", hash = "sha256:f840825b994042e134dc6b16f3aedb7dcda9997cd32ad23a4360733a4ec71915"},
 ]
 
 [package.dependencies]
@@ -826,4 +826,4 @@ pydantic = ">=2.12.5,<3.0.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "f0fade8fe7023b317774978e6c83707f89da1b09c9c3a63cbf1961bcfb19877c"
+content-hash = "2a09c96be22814a3bac5de2d5d6f3895271e596246d1c86d9bc03fd03f92cecf"

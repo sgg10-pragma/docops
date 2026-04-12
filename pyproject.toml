@@ -1,10 +1,13 @@
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "poetry-core>=2.0.0,<3.0.0",
+    "poetry-dynamic-versioning[plugin]>=1.7.1,<2.0.0",
+]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [project]
 name = "wikiops"
-version = "1.0.1"
+dynamic = ["version"]
 description = "Extensible CLI to automate documentation in wiki platforms (Azure DevOps, Confluence, etc.) using Markdown. Built on a plugin and provider architecture, it enables generating, updating, and structuring documentation as code."
 authors = [
     {name = "Sebastian Granda Gallego",email = "sgg10.develop@gmail.com"}
@@ -18,7 +21,7 @@ dependencies = [
     "typer (>=0.24.1,<0.25.0)",
     "pyyaml (>=6.0.3,<7.0.0)",
     "httpx (>=0.28.1,<0.29.0)",
-    "wikiops-sdk (>=1.0.0,<2.0.0)"
+    "wikiops-sdk (>=1.1.0,<2.0.0)",
 ]
 
 [project.urls]
@@ -37,6 +40,13 @@ azure_devops_wiki = "wikiops.providers.azure_devops:AzureDevOpsWikiProviderFacto
 packages = [
     {include = "wikiops", from = "src"}
 ]
+version = "0.0.0"
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = {version = ">=1.7.1,<2.0.0", extras = ["plugin"]}
+
+[tool.poetry-dynamic-versioning]
+enable = true
 
 [dependency-groups]
 test = [

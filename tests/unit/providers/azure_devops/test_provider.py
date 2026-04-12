@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 from types import SimpleNamespace
 
 import pytest
@@ -11,11 +12,14 @@ from wikiops.providers.azure_devops.provider import (
     PatAzureDevOpsProviderSettings,
 )
 from wikiops_sdk.domain import (
+    AssetRef,
+    AssetRefKind,
     ChangeSet,
     CreateChildDocumentOperation,
     CreateDocumentOperation,
     DocumentVersion,
     OperationStatus,
+    PutAssetOperation,
     RefKind,
     UpdateDocumentOperation,
 )
@@ -79,7 +83,7 @@ def test_request_returns_response_for_expected_status(monkeypatch: pytest.Monkey
         def __exit__(self, exc_type, exc, tb):
             return False
 
-        def request(self, method, url, params=None, headers=None, json=None):
+        def request(self, method, url, params=None, headers=None, json=None, content=None):
             captured.update(
                 {
                     "method": method,
@@ -87,6 +91,7 @@ def test_request_returns_response_for_expected_status(monkeypatch: pytest.Monkey
                     "params": params,
                     "headers": headers,
                     "json": json,
+                    "content": content,
                 }
             )
             return FakeResponse(status_code=201, json_data={"ok": True})
@@ -118,7 +123,7 @@ def test_request_raises_on_unexpected_status(monkeypatch: pytest.MonkeyPatch) ->
         def __exit__(self, exc_type, exc, tb):
             return False
 
-        def request(self, method, url, params=None, headers=None, json=None):
+        def request(self, method, url, params=None, headers=None, json=None, content=None):
             return FakeResponse(status_code=500, text="broken")
 
     monkeypatch.setattr("wikiops.providers.azure_devops.provider.httpx.Client", FakeClient)
@@ -207,6 +212,59 @@ def test_build_link_encodes_page_path(doc_ref_factory) -> None:
     link = provider().build_link(doc_ref_factory(path="/Docs/My Page"))
 
     assert "pagePath=/Docs/My%20Page" in link
+
+
+def test_put_asset_uploads_attachment_and_returns_asset(monkeypatch: pytest.MonkeyPatch) -> None:
+    live_provider = provider()
+    captured = {}
+
+    def _request(method, url=None, params=None, headers=None, json=None, content=None, expected_status=None):
+        captured.update(
+            {
+                "method": method,
+                "url": url,
+                "params": params,
+                "headers": headers,
+                "content": content,
+                "expected_status": expected_status,
+            }
+        )
+        return FakeResponse(
+            status_code=201,
+            json_data={"name": "logo--abcd1234.png", "path": "/.attachments/logo--abcd1234.png"},
+            headers={"ETag": '"asset-v1"'},
+        )
+
+    monkeypatch.setattr(live_provider, "_request", _request)
+
+    asset = live_provider.put_asset(
+        PutAssetOperation(
+            asset_key="logo",
+            source={"kind": "plugin_resource", "relative_path": "resources/logo.png"},
+            name="logo.png",
+            media_type="image/png",
+        ),
+        b"PNG",
+    )
+
+    assert captured["method"] == "PUT"
+    assert captured["url"] == live_provider._attachments_url()
+    assert captured["params"]["name"].startswith("logo--")
+    assert captured["headers"]["Content-Type"] == "application/octet-stream"
+    assert captured["content"] == base64.b64encode(b"PNG")
+    assert asset.ref.kind is AssetRefKind.PATH
+    assert asset.ref.locator["path"] == "/.attachments/logo--abcd1234.png"
+    assert asset.version.etag == '"asset-v1"'
+
+
+def test_build_asset_reference_requires_path_based_asset_ref() -> None:
+    asset_ref = AssetRef(
+        provider="azure",
+        kind=AssetRefKind.PATH,
+        locator={"path": "/.attachments/logo.png"},
+    )
+
+    assert provider().build_asset_reference(asset_ref) == "/.attachments/logo.png"
 
 
 def test_apply_changes_handles_update_create_and_child_operations(

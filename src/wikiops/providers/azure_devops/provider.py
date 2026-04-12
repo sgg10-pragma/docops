@@ -1,5 +1,6 @@
 import os
 import base64
+import hashlib
 from urllib.parse import quote
 from typing import Any, Optional, Dict, Set, List
 
@@ -9,6 +10,9 @@ from pydantic import Field
 from wikiops.core.exceptions import ConfigurationError
 from wikiops_sdk.contracts import ProviderSettings
 from wikiops_sdk.domain import (
+    Asset,
+    AssetRef,
+    AssetRefKind,
     AppliedOperationResult,
     ApplyResult,
     ChangeSet,
@@ -20,6 +24,7 @@ from wikiops_sdk.domain import (
     ExecutionContext,
     OperationStatus,
     ProviderCapability,
+    PutAssetOperation,
     RefKind,
     UpdateDocumentOperation,
 )
@@ -63,6 +68,12 @@ class AzureDevOpsWikiProvider:
             f"/_apis/wiki/wikis/{self.settings.wiki}/pages"
         )
 
+    def _attachments_url(self) -> str:
+        return (
+            f"https://dev.azure.com/{self.settings.organization}/{self.settings.project}"
+            f"/_apis/wiki/wikis/{self.settings.wiki}/attachments"
+        )
+
     def _auth_headers(self) -> Dict[str, str]:
         token = os.getenv(self.settings.pat_token_env, "")
         raw = f":{token}".encode("utf-8")
@@ -75,19 +86,22 @@ class AzureDevOpsWikiProvider:
     def _request(
         self,
         method: str,
+        url: Optional[str] = None,
         params: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         json: Optional[Dict[str, Any]] = None,
+        content: Optional[bytes] = None,
         expected_status: Set[int] = None,
     ) -> httpx.Response:
         expected = expected_status or {200}
         with httpx.Client(timeout=self.settings.timeout_seconds) as client:
             response = client.request(
                 method,
-                self._pages_url(),
+                url or self._pages_url(),
                 params={**self.common_params, **(params or {})},
                 headers={**self._auth_headers(), **(headers or {})},
                 json=json,
+                content=content,
             )
         if response.status_code not in expected:
             raise ConfigurationError(
@@ -140,6 +154,7 @@ class AzureDevOpsWikiProvider:
             ProviderCapability.UPDATE_DOCUMENT,
             ProviderCapability.CREATE_CHILD_DOCUMENT,
             ProviderCapability.BUILD_LINK,
+            ProviderCapability.PUT_ASSET,
             ProviderCapability.RESOLVE_BY_PATH,
             ProviderCapability.HIERARCHICAL_PAGES,
             ProviderCapability.VERSION_CHECK,
@@ -197,6 +212,56 @@ class AzureDevOpsWikiProvider:
             f"https://dev.azure.com/{self.settings.organization}/{self.settings.project}"
             f"/_wiki/wikis/{self.settings.wiki}?pagePath={path}"
         )
+
+    def put_asset(self, operation: PutAssetOperation, content: bytes) -> Asset:
+        stored_name = self._hashed_asset_name(operation.name, content)
+        # Azure DevOps documents this endpoint as an octet-stream upload, but in
+        # practice the wiki attachments API expects the request body to contain
+        # Base64-encoded payload bytes.
+        encoded_content = base64.b64encode(content)
+        response = self._request(
+            "PUT",
+            url=self._attachments_url(),
+            params={"name": stored_name},
+            headers={"Content-Type": "application/octet-stream"},
+            content=encoded_content,
+            expected_status={201},
+        )
+        payload = response.json()
+        asset_ref = AssetRef(
+            provider=self.settings.provider_name,
+            kind=AssetRefKind.PATH,
+            locator={"path": payload.get("path", f"/.attachments/{stored_name}")},
+        )
+        return Asset(
+            ref=asset_ref,
+            name=payload.get("name", stored_name),
+            media_type=operation.media_type or "application/octet-stream",
+            size_bytes=len(content),
+            version=DocumentVersion(etag=response.headers.get("ETag")),
+            metadata={
+                "path": payload.get("path"),
+                "url": payload.get("url"),
+            },
+        )
+
+    def build_asset_reference(self, ref: AssetRef) -> str:
+        if ref.kind is not AssetRefKind.PATH or "path" not in ref.locator:
+            raise ConfigurationError(
+                "Azure DevOps asset references must be path-based and include locator.path."
+            )
+        return ref.locator["path"]
+
+    @staticmethod
+    def _hashed_asset_name(name: str | None, content: bytes) -> str:
+        if not name:
+            raise ConfigurationError(
+                "Azure DevOps asset uploads require the prepared operation to include a file name."
+            )
+        path = os.path.splitext(name)
+        digest = hashlib.sha256(content).hexdigest()[:8]
+        stem, suffix = path
+        return f"{stem}--{digest}{suffix}"
 
     def apply_changes(self, changeset: ChangeSet) -> ApplyResult:
         results: List[AppliedOperationResult] = []

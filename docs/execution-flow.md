@@ -4,7 +4,7 @@ This page describes how the current host processes a command from configuration 
 
 ## Command-Level Flow
 
-The main CLI workflow is implemented by `wikiops.cli.app` and delegated to `wikiops.core.orchestrator.DefaultDocumentationOrchestrator`.
+The main plan/apply CLI workflow is implemented by `wikiops.cli.app` and delegated to `wikiops.core.orchestrator.DefaultDocumentationOrchestrator`.
 
 At a high level, the host executes this sequence:
 
@@ -20,6 +20,23 @@ CLI command
 -> plan changes
 -> render diff
 -> optionally apply changes
+```
+
+## Read-Only Document Inspection Flow
+
+`wikiops docs get` follows a smaller host-managed read path implemented by `wikiops.core.document_reader.DocumentReader`.
+
+At a high level, the host executes this sequence:
+
+```text
+CLI command
+-> load config
+-> resolve profile and provider
+-> validate read capabilities
+-> resolve alias or path into a DocumentRef
+-> fetch the current document
+-> optionally build a user-facing link
+-> print JSON or Markdown output
 ```
 
 ## Step-By-Step Runtime Lifecycle

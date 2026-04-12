@@ -60,6 +60,14 @@ class PackagePluginResourceProvider:
             )
         return node.read_text(encoding=encoding)
 
+    def read_bytes(self, relative_path: str) -> bytes:
+        node = self._resolve(relative_path)
+        if not node.is_file():
+            raise FileNotFoundError(
+                f"Plugin resource '{relative_path}' was not found in package '{self._package}'."
+            )
+        return node.read_bytes()
+
     def list(self, prefix: str = "") -> Iterable[str]:
         normalized_prefix = "/".join(
             self._normalize_path(prefix, allow_empty=True)
