@@ -1,10 +1,18 @@
 from __future__ import annotations
 
+import re
 from types import SimpleNamespace
 
 from wikiops.cli import app as cli_app
 from wikiops.core.document_reader import DocumentReadResult
 from wikiops_sdk.domain import ApplyResult, AppliedOperationResult, OperationStatus
+
+
+ANSI_ESCAPE_PATTERN = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _normalize_cli_output(text: str) -> str:
+    return " ".join(ANSI_ESCAPE_PATTERN.sub("", text).split())
 
 
 def test_load_yaml_reads_valid_and_empty_documents(tmp_path) -> None:
@@ -162,7 +170,10 @@ def test_docs_get_command_requires_a_selector(cli_runner) -> None:
     )
 
     assert result.exit_code == 2
-    assert "Exactly one of --alias or --path must be provided." in result.output
+    assert (
+        "Exactly one of --alias or --path must be provided."
+        in _normalize_cli_output(result.output)
+    )
 
 
 def test_docs_get_command_rejects_multiple_selectors(cli_runner) -> None:
@@ -183,7 +194,10 @@ def test_docs_get_command_rejects_multiple_selectors(cli_runner) -> None:
     )
 
     assert result.exit_code == 2
-    assert "Exactly one of --alias or --path must be provided." in result.output
+    assert (
+        "Exactly one of --alias or --path must be provided."
+        in _normalize_cli_output(result.output)
+    )
 
 
 def test_run_command_prints_plan_output(
