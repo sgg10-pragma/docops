@@ -197,15 +197,26 @@ def test_run_command_prints_plan_output(
     change_set = changeset_factory()
 
     class FakeOrchestrator:
-        def plan_from_file(self, config, profile, plugin, raw_input, dry_run=True):
+        def plan_from_file(
+            self,
+            config,
+            profile,
+            plugin,
+            raw_input,
+            dry_run=True,
+            input_path=None,
+        ):
             assert config == "config.yaml"
             assert profile == "default"
             assert plugin == "demo.plugin"
             assert raw_input == {"title": "Example"}
             assert dry_run is True
+            assert input_path == str(input_path_arg)
             return object(), object(), change_set, "diff output"
 
     monkeypatch.setattr(cli_app, "DefaultDocumentationOrchestrator", FakeOrchestrator)
+
+    input_path_arg = input_path
 
     result = cli_runner.invoke(
         cli_app.app,
@@ -241,11 +252,14 @@ def test_run_apply_returns_success_exit_code(
     apply_result = apply_result_factory(statuses=[OperationStatus.APPLIED])
 
     class FakeOrchestrator:
-        def apply_from_file(self, config, profile, plugin, raw_input):
+        def apply_from_file(self, config, profile, plugin, raw_input, input_path=None):
             assert raw_input == {"title": "Example"}
+            assert input_path == str(input_path_arg)
             return change_set, apply_result, "diff output"
 
     monkeypatch.setattr(cli_app, "DefaultDocumentationOrchestrator", FakeOrchestrator)
+
+    input_path_arg = input_path
 
     result = cli_runner.invoke(
         cli_app.app,
@@ -288,10 +302,13 @@ def test_run_apply_returns_failure_exit_code(
     )
 
     class FakeOrchestrator:
-        def apply_from_file(self, config, profile, plugin, raw_input):
+        def apply_from_file(self, config, profile, plugin, raw_input, input_path=None):
+            assert input_path == str(input_path_arg)
             return change_set, apply_result, "diff output"
 
     monkeypatch.setattr(cli_app, "DefaultDocumentationOrchestrator", FakeOrchestrator)
+
+    input_path_arg = input_path
 
     result = cli_runner.invoke(
         cli_app.app,

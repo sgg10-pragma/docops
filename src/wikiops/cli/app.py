@@ -114,7 +114,11 @@ def run(
 
     if apply:
         change_set, apply_result, diff = orchestrator.apply_from_file(
-            config, profile, plugin, raw_input
+            config,
+            profile,
+            plugin,
+            raw_input,
+            input_path=input,
         )
         typer.echo("=== CHANGESET ===")
         typer.echo(change_set.model_dump_json(indent=2))
@@ -125,7 +129,12 @@ def run(
         raise typer.Exit(code=1 if apply_result.has_failures() else 0)
 
     _, _, change_set, diff = orchestrator.plan_from_file(
-        config, profile, plugin, raw_input, dry_run=True
+        config,
+        profile,
+        plugin,
+        raw_input,
+        dry_run=True,
+        input_path=input,
     )
     typer.echo("=== CHANGESET ===")
     typer.echo(change_set.model_dump_json(indent=2))

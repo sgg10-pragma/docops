@@ -12,10 +12,13 @@ from wikiops.core.orchestrator import DefaultDocumentationOrchestrator
 from wikiops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
 from wikiops_sdk.domain import (
     ApplyResult,
+    AssetPathBase,
     ChangeSet,
     Document,
     DocumentRef,
     OperationStatus,
+    PluginResourceAssetSource,
+    PutAssetOperation,
     ProviderCapability,
     UpdateDocumentOperation,
 )
@@ -23,6 +26,10 @@ from wikiops_sdk.domain import (
 
 class DemoPluginConfig(PluginConfigModel):
     greeting: str = Field(default="hello")
+
+
+class AssetPolicyPluginConfig(PluginConfigModel):
+    asset_policy: dict[str, object] = Field(default_factory=dict)
 
 
 class DemoPluginInput(PluginInputModel):
@@ -132,6 +139,58 @@ class CapabilityHungryPlugin(RecordingPlugin):
         description="Plugin requiring update capability.",
         required_capabilities={ProviderCapability.UPDATE_DOCUMENT},
     )
+
+
+class AssetPlugin(RecordingPlugin):
+    def get_config_model(self):
+        return AssetPolicyPluginConfig
+
+    def required_ref_aliases(self, plugin_config, input_data):
+        return {"inventory"}
+
+    def plan(self, ctx):
+        self.received_ctx = ctx
+        return ChangeSet(
+            plugin_id=self.manifest.plugin_id,
+            operations=[
+                PutAssetOperation(
+                    asset_key="logo",
+                    source=PluginResourceAssetSource(relative_path="resources/logo.png"),
+                )
+            ],
+        )
+
+
+class LocalAssetPlugin(AssetPlugin):
+    def plan(self, ctx):
+        self.received_ctx = ctx
+        return ChangeSet(
+            plugin_id=self.manifest.plugin_id,
+            operations=[
+                PutAssetOperation(
+                    asset_key="logo",
+                    source={
+                        "kind": "local_file",
+                        "path": "./logo.png",
+                        "relative_to": AssetPathBase.INPUT_DIR,
+                    },
+                )
+            ],
+        )
+
+
+class MissingAssetReferencePlugin(RecordingPlugin):
+    def plan(self, ctx):
+        self.received_ctx = ctx
+        return ChangeSet(
+            plugin_id=self.manifest.plugin_id,
+            operations=[
+                UpdateDocumentOperation(
+                    ref=ctx.refs["inventory"],
+                    new_content="![Logo](asset://missing)",
+                )
+            ],
+        )
 
 
 class DemoProvider:
@@ -442,6 +501,149 @@ def test_plan_internal_preserves_explicit_nulls_in_input_data(
     }
 
 
+def test_plan_internal_rejects_asset_operations_without_provider_support(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = AssetPlugin()
+    ref = doc_ref_factory(provider="default", path="/inventory")
+    config = _build_config(ref, {"demo.plugin": {}})
+    provider = DemoProvider({ProviderCapability.READ_DOCUMENT}, document_factory(ref=ref))
+    orchestrator = DefaultDocumentationOrchestrator()
+    orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
+    orchestrator.reference_resolver = SimpleNamespace(
+        resolve_alias=lambda profile, alias: profile.refs[alias]
+    )
+    orchestrator.document_loader = SimpleNamespace(
+        load=lambda _provider, refs: {"inventory": document_factory(ref=refs["inventory"]) }
+    )
+
+    with pytest.raises(ProviderCompatibilityError, match="does not support asset uploads"):
+        orchestrator._plan_internal(config, "default", plugin.manifest.plugin_id, {"title": "Example"})
+
+
+def test_plan_internal_warns_when_local_asset_roots_are_deactivated(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+    tmp_path,
+) -> None:
+    plugin = LocalAssetPlugin()
+    ref = doc_ref_factory(provider="default", path="/inventory")
+    (tmp_path / "logo.png").write_bytes(b"PNG")
+    config = _build_config(
+        ref,
+        {
+            "demo.plugin": {
+                "asset_policy": {
+                    "deactivate_allowed_asset_roots": True,
+                }
+            }
+        },
+    )
+    provider = DemoProvider(
+        {ProviderCapability.READ_DOCUMENT, ProviderCapability.PUT_ASSET},
+        document_factory(ref=ref),
+    )
+    orchestrator = DefaultDocumentationOrchestrator()
+    orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
+    orchestrator.reference_resolver = SimpleNamespace(
+        resolve_alias=lambda profile, alias: profile.refs[alias]
+    )
+    orchestrator.document_loader = SimpleNamespace(
+        load=lambda _provider, refs: {"inventory": document_factory(ref=refs["inventory"]) }
+    )
+
+    _, ctx, change_set = orchestrator._plan_internal(
+        config,
+        "default",
+        plugin.manifest.plugin_id,
+        {"title": "Example"},
+        config_path=str(tmp_path / "wikiops.yaml"),
+        input_path=str(tmp_path / "input.yaml"),
+    )
+
+    assert ctx.runtime_vars["config_dir"] == str(tmp_path)
+    assert ctx.runtime_vars["input_dir"] == str(tmp_path)
+    assert change_set.warnings[0].code == "asset_policy_unrestricted_local_files"
+
+
+def test_plan_internal_rejects_local_asset_sources_outside_allowed_roots(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+    tmp_path,
+) -> None:
+    plugin = LocalAssetPlugin()
+    ref = doc_ref_factory(provider="default", path="/inventory")
+    asset_file = tmp_path / "logo.png"
+    asset_file.write_bytes(b"PNG")
+    config = _build_config(
+        ref,
+        {
+            "demo.plugin": {
+                "asset_policy": {
+                    "allowed_asset_roots": ["./trusted-assets"],
+                }
+            }
+        },
+    )
+    provider = DemoProvider(
+        {ProviderCapability.READ_DOCUMENT, ProviderCapability.PUT_ASSET},
+        document_factory(ref=ref),
+    )
+    orchestrator = DefaultDocumentationOrchestrator()
+    orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
+    orchestrator.reference_resolver = SimpleNamespace(
+        resolve_alias=lambda profile, alias: profile.refs[alias]
+    )
+    orchestrator.document_loader = SimpleNamespace(
+        load=lambda _provider, refs: {"inventory": document_factory(ref=refs["inventory"])}
+    )
+
+    with pytest.raises(ConfigurationError, match="outside the configured allowed_asset_roots"):
+        orchestrator._plan_internal(
+            config,
+            "default",
+            plugin.manifest.plugin_id,
+            {"title": "Example"},
+            config_path=str(tmp_path / "wikiops.yaml"),
+            input_path=str(tmp_path / "input.yaml"),
+        )
+
+
+def test_plan_internal_rejects_missing_asset_references(
+    monkeypatch: pytest.MonkeyPatch,
+    doc_ref_factory,
+    document_factory,
+) -> None:
+    plugin = MissingAssetReferencePlugin()
+    ref = doc_ref_factory(provider="default", path="/inventory")
+    resolved_ref = doc_ref_factory(provider="default", path="/resolved")
+    config = _build_config(ref, {})
+    provider = DemoProvider(
+        {ProviderCapability.READ_DOCUMENT},
+        document_factory(ref=resolved_ref),
+        resolved_ref=resolved_ref,
+    )
+    orchestrator = DefaultDocumentationOrchestrator()
+    orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
+    orchestrator.reference_resolver = SimpleNamespace(
+        resolve_alias=lambda profile, alias: profile.refs[alias]
+    )
+    orchestrator.document_loader = SimpleNamespace(
+        load=lambda _provider, refs: {"inventory": document_factory(ref=refs["inventory"]) }
+    )
+
+    with pytest.raises(ConfigurationError, match="asset keys that are not uploaded"):
+        orchestrator._plan_internal(config, "default", plugin.manifest.plugin_id, {"title": "Example"})
+
+
 def test_plan_and_apply_raise_without_config_file() -> None:
     orchestrator = DefaultDocumentationOrchestrator()
 
@@ -484,14 +686,20 @@ def test_apply_from_file_reuses_plan_and_applies_changes(
 ) -> None:
     orchestrator = DefaultDocumentationOrchestrator()
     config = app_config_factory()
+    ctx = object()
     change_set = changeset_factory()
     apply_result = apply_result_factory(statuses=[OperationStatus.APPLIED])
     provider = object()
-    orchestrator.plan_from_file = lambda **_kwargs: (config, object(), change_set, "diff")
+    plugin = SimpleNamespace(resources=object())
+    orchestrator.plan_from_file = lambda **_kwargs: (config, ctx, change_set, "diff")
     orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
+    orchestrator.plugin_manager = SimpleNamespace(get=lambda _plugin_id: plugin)
     orchestrator.apply_engine = SimpleNamespace(
-        apply=lambda candidate, planned: apply_result
-        if candidate is provider and planned is change_set
+        apply=lambda candidate, planned, execution_ctx, resources: apply_result
+        if candidate is provider
+        and planned is change_set
+        and execution_ctx is ctx
+        and resources is plugin.resources
         else None
     )
 

@@ -9,7 +9,17 @@ from wikiops.core.exceptions import ConfigurationError
 from wikiops.core.provider_manager import ProviderManager
 from wikiops_sdk.compat import ProviderAPIIncompatibleError
 from wikiops_sdk.contracts import ProviderSettings
-from wikiops_sdk.domain import ApplyResult, ChangeSet, Document, DocumentRef, ProviderCapability
+from wikiops_sdk.domain import (
+    ApplyResult,
+    Asset,
+    AssetRef,
+    AssetRefKind,
+    ChangeSet,
+    Document,
+    DocumentRef,
+    ProviderCapability,
+    PutAssetOperation,
+)
 
 
 def _patch_entry_points(monkeypatch: pytest.MonkeyPatch, entry_points: list[Any]) -> None:
@@ -47,6 +57,21 @@ class DemoProvider:
 
     def build_link(self, ref: DocumentRef) -> str | None:
         return None
+
+    def put_asset(self, operation: PutAssetOperation, content: bytes) -> Asset:
+        return Asset(
+            ref=AssetRef(
+                provider=self.settings.provider_name,
+                kind=AssetRefKind.PATH,
+                locator={"path": f"/.assets/{operation.name or 'asset.bin'}"},
+            ),
+            name=operation.name or "asset.bin",
+            media_type=operation.media_type or "application/octet-stream",
+            size_bytes=len(content),
+        )
+
+    def build_asset_reference(self, ref: AssetRef) -> str:
+        return ref.locator["path"]
 
     def apply_changes(self, changeset: ChangeSet) -> ApplyResult:
         return ApplyResult(provider_name=self.settings.provider_name)

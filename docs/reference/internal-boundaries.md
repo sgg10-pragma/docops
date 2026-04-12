@@ -24,6 +24,7 @@ The following behaviors are stable enough to rely on as current host behavior:
 - package-relative plugin resource access
 - preservation of plugin-owned `resources` when already present
 - plan versus apply behavior in the CLI
+- host-managed asset upload orchestration and `asset://...` reference rewriting
 - built-in Azure DevOps provider settings, capabilities, and path-based ref behavior
 
 ## Host Conventions Rather Than SDK Guarantees

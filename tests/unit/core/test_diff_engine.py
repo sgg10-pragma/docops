@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 from wikiops.core.diff_engine import DiffEngine
-from wikiops_sdk.domain import CreateDocumentOperation, UpdateDocumentOperation
+from wikiops_sdk.domain import (
+    CreateDocumentOperation,
+    PluginResourceAssetSource,
+    PutAssetOperation,
+    UpdateDocumentOperation,
+)
 
 
 def test_render_builds_unified_diff_for_updates(
@@ -57,3 +62,20 @@ def test_render_keeps_operation_order(
     diff = DiffEngine().render(documents, change_set)
 
     assert diff.index("Type: create_document") > diff.index("--- current")
+
+
+def test_render_describes_asset_upload_operations(changeset_factory) -> None:
+    change_set = changeset_factory(
+        operations=[
+            PutAssetOperation(
+                asset_key="logo",
+                source=PluginResourceAssetSource(relative_path="resources/logo.png"),
+            )
+        ]
+    )
+
+    diff = DiffEngine().render({}, change_set)
+
+    assert "Type: put_asset" in diff
+    assert "Asset key: logo" in diff
+    assert "uploads an asset" in diff

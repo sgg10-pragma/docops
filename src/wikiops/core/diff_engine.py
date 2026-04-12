@@ -1,7 +1,7 @@
 from typing import Dict, List
 from difflib import unified_diff
 
-from wikiops_sdk.domain import ChangeSet, UpdateDocumentOperation
+from wikiops_sdk.domain import ChangeSet, PutAssetOperation, UpdateDocumentOperation
 
 
 class DiffEngine:
@@ -17,6 +17,20 @@ class DiffEngine:
     def render(self, documents: Dict[str, object], change_set: ChangeSet) -> str:
         chunks: List[str] = []
         for op in change_set.operations:
+            if isinstance(op, PutAssetOperation):
+                source_kind = op.source.kind
+                source_value = getattr(op.source, "relative_path", None) or getattr(
+                    op.source, "path", ""
+                )
+                chunks.append(
+                    f"# Operation {op.operation_id}\n"
+                    f"Type: {op.operation}\n"
+                    f"Asset key: {op.asset_key}\n"
+                    f"Source: {source_kind} :: {source_value}\n"
+                    f"This operation uploads an asset and has no line diff against an existing document."
+                )
+                continue
+
             if not isinstance(op, UpdateDocumentOperation):
                 chunks.append(
                     f"# Operation {op.operation_id}\n"
