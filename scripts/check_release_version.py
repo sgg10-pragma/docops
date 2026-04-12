@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that a release tag matches the project version."""
+"""Validate that a release tag matches an expected version."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ VERSION_PATTERN = re.compile(r'^version\s*=\s*"([^"]+)"\s*$')
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Ensure a release tag matches the version in pyproject.toml."
+        description="Ensure a release tag matches the expected package version."
     )
     parser.add_argument(
         "--tag",
@@ -22,9 +22,13 @@ def parse_args() -> argparse.Namespace:
         help="Git tag to validate, for example 'v1.2.3'.",
     )
     parser.add_argument(
+        "--version",
+        help="Resolved package version to compare against the release tag.",
+    )
+    parser.add_argument(
         "--pyproject",
         default="pyproject.toml",
-        help="Path to pyproject.toml.",
+        help="Path to pyproject.toml when --version is not provided.",
     )
     return parser.parse_args()
 
@@ -44,11 +48,14 @@ def normalize_tag(tag: str) -> str:
 
 def main() -> int:
     args = parse_args()
-    pyproject_path = Path(args.pyproject)
-    if not pyproject_path.exists():
-        raise FileNotFoundError(f"Missing pyproject.toml at {pyproject_path}.")
+    if args.version is not None:
+        project_version = args.version
+    else:
+        pyproject_path = Path(args.pyproject)
+        if not pyproject_path.exists():
+            raise FileNotFoundError(f"Missing pyproject.toml at {pyproject_path}.")
+        project_version = read_project_version(pyproject_path)
 
-    project_version = read_project_version(pyproject_path)
     tag_version = normalize_tag(args.tag)
 
     if tag_version != project_version:
