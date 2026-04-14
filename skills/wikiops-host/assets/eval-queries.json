@@ -1,0 +1,54 @@
+[
+  {
+    "query": "Configura wikiops para Azure DevOps Wiki con organization GrupoBancolombia, project Nequi y wiki Nequi.wiki",
+    "should_trigger": true
+  },
+  {
+    "query": "Quiero crear o actualizar mi config.yaml de wikiops para usar el provider azdo y agregar refs para sample_tribe y sample_dp",
+    "should_trigger": true
+  },
+  {
+    "query": "Muéstrame qué plugins y providers tengo instalados en wikiops",
+    "should_trigger": true
+  },
+  {
+    "query": "Lee el contenido actual de la página sample_dp usando wikiops docs get",
+    "should_trigger": true
+  },
+  {
+    "query": "Ejecuta el plugin nequi.datamind con este input yaml en plan mode y muéstrame el diff",
+    "should_trigger": true
+  },
+  {
+    "query": "Ya tengo el input generado por la skill del plugin, ahora corre wikiops run y aplícalo si el plan sale bien",
+    "should_trigger": true
+  },
+  {
+    "query": "Configura solo el provider de Azure DevOps en wikiops, sin meter todavía settings del plugin",
+    "should_trigger": true
+  },
+  {
+    "query": "Ejecuta el plugin nequi.datamind correctamente con wikiops run y revisa el diff antes de aplicar",
+    "should_trigger": true
+  },
+  {
+    "query": "Necesito diseñar el contrato DocumentProvider del SDK",
+    "should_trigger": false
+  },
+  {
+    "query": "Ayúdame a modificar el template jinja del plugin nequi.datamind",
+    "should_trigger": false
+  },
+  {
+    "query": "Quiero escribir un nuevo provider para wikiops-sdk",
+    "should_trigger": false
+  },
+  {
+    "query": "Haz un code review del parser del plugin y sus bloques gestionados",
+    "should_trigger": false
+  },
+  {
+    "query": "Quiero definir el input.yaml exacto de update_dp para nequi.datamind",
+    "should_trigger": false
+  }
+]
