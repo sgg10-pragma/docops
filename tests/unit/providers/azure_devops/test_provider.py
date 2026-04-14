@@ -257,6 +257,66 @@ def test_put_asset_uploads_attachment_and_returns_asset(monkeypatch: pytest.Monk
     assert asset.version.etag == '"asset-v1"'
 
 
+def test_put_asset_treats_duplicate_attachment_as_success(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    live_provider = provider()
+
+    def _request(*_args, **_kwargs):
+        raise ConfigurationError(
+            "Azure DevOps API request failed with status 500: "
+            '{"message":"The wiki attachment creation failed with message : '
+            "The path '/.attachments/logo--abcd1234.png' specified in the add "
+            'operation already exists. Please specify a new path.",'
+            '"typeKey":"WikiCreateAttachmentFailedException"}'
+        )
+
+    monkeypatch.setattr(live_provider, "_request", _request)
+
+    asset = live_provider.put_asset(
+        PutAssetOperation(
+            asset_key="logo",
+            source={"kind": "plugin_resource", "relative_path": "resources/logo.png"},
+            name="logo.png",
+            media_type="image/png",
+        ),
+        b"PNG",
+    )
+
+    assert asset.ref.locator["path"] == "/.attachments/logo--abcd1234.png"
+    assert asset.name == "logo--abcd1234.png"
+    assert asset.version is None
+    assert asset.metadata["path"] == "/.attachments/logo--abcd1234.png"
+
+
+def test_put_asset_raises_for_non_idempotent_provider_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    live_provider = provider()
+
+    def _request(*_args, **_kwargs):
+        raise ConfigurationError(
+            "Azure DevOps API request failed with status 500: "
+            '{"message":"backend unavailable","typeKey":"SomeOtherFailure"}'
+        )
+
+    monkeypatch.setattr(live_provider, "_request", _request)
+
+    with pytest.raises(ConfigurationError, match="backend unavailable"):
+        live_provider.put_asset(
+            PutAssetOperation(
+                asset_key="logo",
+                source={
+                    "kind": "plugin_resource",
+                    "relative_path": "resources/logo.png",
+                },
+                name="logo.png",
+                media_type="image/png",
+            ),
+            b"PNG",
+        )
+
+
 def test_build_asset_reference_requires_path_based_asset_ref() -> None:
     asset_ref = AssetRef(
         provider="azure",

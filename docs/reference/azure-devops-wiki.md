@@ -122,6 +122,7 @@ Current asset behavior:
 
 - uploads use attachment storage under `/.attachments/`
 - stored names are rewritten with a short content hash suffix
+- duplicate uploads for the same stored attachment path are treated as idempotent success
 - the provider returns path-based asset refs
 - embeddable asset references are absolute wiki paths such as `/.attachments/logo--abcd1234.png`
 

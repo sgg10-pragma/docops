@@ -1,3 +1,4 @@
+import re
 import os
 import base64
 import hashlib
@@ -219,30 +220,46 @@ class AzureDevOpsWikiProvider:
         # practice the wiki attachments API expects the request body to contain
         # Base64-encoded payload bytes.
         encoded_content = base64.b64encode(content)
-        response = self._request(
-            "PUT",
-            url=self._attachments_url(),
-            params={"name": stored_name},
-            headers={"Content-Type": "application/octet-stream"},
-            content=encoded_content,
-            expected_status={201},
-        )
-        payload = response.json()
+        try:
+            response = self._request(
+                "PUT",
+                url=self._attachments_url(),
+                params={"name": stored_name},
+                headers={"Content-Type": "application/octet-stream"},
+                content=encoded_content,
+                expected_status={201},
+            )
+            payload = response.json()
+            asset_path = payload.get("path", f"/.attachments/{stored_name}")
+            asset_name = payload.get("name", stored_name)
+            asset_metadata = {
+                "path": payload.get("path"),
+                "url": payload.get("url"),
+            }
+            asset_version = DocumentVersion(etag=response.headers.get("ETag"))
+        except ConfigurationError as exc:
+            if not self._is_duplicate_attachment_error(str(exc)):
+                raise
+            asset_path = (
+                self._extract_attachment_path(str(exc))
+                or f"/.attachments/{stored_name}"
+            )
+            asset_name = asset_path.rsplit("/", 1)[-1]
+            asset_metadata = {"path": asset_path}
+            asset_version = None
+
         asset_ref = AssetRef(
             provider=self.settings.provider_name,
             kind=AssetRefKind.PATH,
-            locator={"path": payload.get("path", f"/.attachments/{stored_name}")},
+            locator={"path": asset_path},
         )
         return Asset(
             ref=asset_ref,
-            name=payload.get("name", stored_name),
+            name=asset_name,
             media_type=operation.media_type or "application/octet-stream",
             size_bytes=len(content),
-            version=DocumentVersion(etag=response.headers.get("ETag")),
-            metadata={
-                "path": payload.get("path"),
-                "url": payload.get("url"),
-            },
+            version=asset_version,
+            metadata=asset_metadata,
         )
 
     def build_asset_reference(self, ref: AssetRef) -> str:
@@ -262,6 +279,25 @@ class AzureDevOpsWikiProvider:
         digest = hashlib.sha256(content).hexdigest()[:8]
         stem, suffix = path
         return f"{stem}--{digest}{suffix}"
+
+    @staticmethod
+    def _is_duplicate_attachment_error(message: str) -> bool:
+        lowered = message.lower()
+        return (
+            "wikicreateattachmentfailedexception" in lowered
+            and "already exists" in lowered
+        )
+
+    @staticmethod
+    def _extract_attachment_path(message: str) -> str | None:
+        match = re.search(
+            r"path '([^']+/\.attachments/[^']+|/\.attachments/[^']+)'", message
+        )
+        if match is not None:
+            candidate = match.group(1)
+            attachment_index = candidate.find("/.attachments/")
+            return candidate[attachment_index:]
+        return None
 
     def apply_changes(self, changeset: ChangeSet) -> ApplyResult:
         results: List[AppliedOperationResult] = []
