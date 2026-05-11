@@ -4,7 +4,7 @@ import pytest
 
 from docops.core.config_loader import ConfigLoader
 from docops.core.exceptions import ConfigurationError
-from wikiops_sdk.domain import RefKind
+from docops_sdk.domain import RefKind
 
 
 def test_load_rejects_missing_file(tmp_path) -> None:

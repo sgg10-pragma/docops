@@ -6,11 +6,12 @@ requires = [
 build-backend = "poetry_dynamic_versioning.backend"
 
 [project]
-name = "wikiops"
+name = "docops"
 dynamic = ["version"]
 description = "Extensible CLI to automate documentation in wiki platforms (Azure DevOps, Confluence, etc.) using Markdown. Built on a plugin and provider architecture, it enables generating, updating, and structuring documentation as code."
 authors = [
-    {name = "Sebastian Granda Gallego",email = "sgg10.develop@gmail.com"}
+    {name = "Sebastian Granda Gallego", email = "sgg10.develop@gmail.com"},
+    {name = "Sebastian Granda Gallego", email = "sebastian.granda@pragma.com.co"}
 ]
 license = "MIT"
 license-files = ["LICENSE"]
@@ -21,19 +22,19 @@ dependencies = [
     "typer (>=0.24.1,<0.25.0)",
     "pyyaml (>=6.0.3,<7.0.0)",
     "httpx (>=0.28.1,<0.29.0)",
-    "wikiops-sdk (>=1.1.0,<2.0.0)",
+    "docops-sdk (>=1.0.0,<2.0.0)",
 ]
 
 [project.urls]
-Homepage = "https://github.com/sgg10/wikiops"
-Repository = "https://github.com/sgg10/wikiops"
-Documentation = "https://github.com/sgg10/wikiops/tree/main/docs"
-Issues = "https://github.com/sgg10/wikiops/issues"
+Homepage = "https://github.com/sgg10-pragma/docops"
+Repository = "https://github.com/sgg10-pragma/docops"
+Documentation = "https://github.com/sgg10-pragma/docops/tree/main/docs"
+Issues = "https://github.com/sgg10-pragma/docops/issues"
 
 [project.scripts]
-wikiops = "docops.cli.app:app"
+docops = "docops.cli.app:app"
 
-[project.entry-points."wikiops.providers"]
+[project.entry-points."docops.providers"]
 azure_devops_wiki = "docops.providers.azure_devops:AzureDevOpsWikiProviderFactory"
 
 [tool.poetry]
@@ -41,6 +42,9 @@ packages = [
     {include = "docops", from = "src"}
 ]
 version = "0.0.0"
+
+[tool.poetry.dependencies]
+docops-sdk = {path = "../docops-sdk", develop = true}
 
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = {version = ">=1.7.1,<2.0.0", extras = ["plugin"]}
