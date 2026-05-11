@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 from docops.cli import app as cli_app
 from docops.core.document_reader import DocumentReadResult
-from wikiops_sdk.domain import ApplyResult, AppliedOperationResult, OperationStatus
+from docops_sdk.domain import ApplyResult, AppliedOperationResult, OperationStatus
 
 
 ANSI_ESCAPE_PATTERN = re.compile(r"\x1b\[[0-9;]*m")

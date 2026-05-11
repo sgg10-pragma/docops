@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/wikiops
+      url: https://test.pypi.org/p/docops
     permissions:
       id-token: write
 
@@ -123,7 +123,7 @@ jobs:
         run: |
           python scripts/wait_for_package.py \
             --repository testpypi \
-            --package wikiops \
+            --package docops \
             --version "${{ needs.build-release.outputs.package-version }}" \
             --timeout 300 \
             --interval 10
@@ -136,7 +136,7 @@ jobs:
           python -m pip install \
             --index-url https://test.pypi.org/simple/ \
             --extra-index-url https://pypi.org/simple/ \
-            "wikiops==${{ needs.build-release.outputs.package-version }}"
+            "docops==${{ needs.build-release.outputs.package-version }}"
           python scripts/smoke_test_host.py --expected-distribution-version "${{ needs.build-release.outputs.package-version }}"
 
   publish-pypi:
@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/wikiops
+      url: https://pypi.org/p/docops
     permissions:
       id-token: write
 

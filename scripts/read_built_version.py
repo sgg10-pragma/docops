@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Print the version embedded in the built wikiops wheel filename."""
+"""Print the version embedded in the built docops wheel filename."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--distribution",
-        default="wikiops",
+        default="docops",
         help="Distribution name to match in wheel filenames.",
     )
     return parser.parse_args()

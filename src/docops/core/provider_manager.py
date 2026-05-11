@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Protocol, Type
 from importlib.metadata import entry_points
 
 from docops.core.exceptions import ConfigurationError
-from wikiops_sdk import PROVIDER_ENTRYPOINT_GROUP, ensure_provider_api_compatible
-from wikiops_sdk.compat import CompatibilityError
-from wikiops_sdk.contracts import DocumentProvider, ProviderSettings
+from docops_sdk import PROVIDER_ENTRYPOINT_GROUP, ensure_provider_api_compatible
+from docops_sdk.compat import CompatibilityError
+from docops_sdk.contracts import DocumentProvider, ProviderSettings
 
 
 class ProviderFactory(Protocol):

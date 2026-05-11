@@ -11,7 +11,7 @@ from docops.providers.azure_devops.provider import (
     AzureDevOpsWikiProviderFactory,
     PatAzureDevOpsProviderSettings,
 )
-from wikiops_sdk.domain import (
+from docops_sdk.domain import (
     AssetRef,
     AssetRefKind,
     ChangeSet,

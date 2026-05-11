@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 from docops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
 from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
 from docops.core.orchestrator import DefaultDocumentationOrchestrator
-from wikiops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
-from wikiops_sdk.domain import (
+from docops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
+from docops_sdk.domain import (
     ApplyResult,
     AssetPathBase,
     ChangeSet,

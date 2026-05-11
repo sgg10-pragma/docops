@@ -2,8 +2,8 @@ from pathlib import Path
 from uuid import uuid4
 from typing import Dict, Tuple
 
-from wikiops_sdk import ensure_python_compatible
-from wikiops_sdk.domain import (
+from docops_sdk import ensure_python_compatible
+from docops_sdk.domain import (
     ApplyResult,
     AssetPolicy,
     ChangeSet,

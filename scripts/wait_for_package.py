@@ -29,7 +29,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--package",
         required=True,
-        help="Distribution name, for example 'wikiops'.",
+        help="Distribution name, for example 'docops'.",
     )
     parser.add_argument(
         "--version",

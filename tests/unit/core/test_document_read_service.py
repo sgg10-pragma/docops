@@ -6,7 +6,7 @@ import pytest
 
 from docops.core.document_reader import DocumentReader
 from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
-from wikiops_sdk.domain import ProviderCapability, RefKind
+from docops_sdk.domain import ProviderCapability, RefKind
 
 
 class DemoProvider:

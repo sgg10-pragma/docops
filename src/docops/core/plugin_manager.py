@@ -4,9 +4,9 @@ from importlib.metadata import entry_points
 
 from docops.core.exceptions import ConfigurationError
 from docops.core.plugin_resources import PackagePluginResourceProvider
-from wikiops_sdk import PLUGIN_ENTRYPOINT_GROUP, ensure_plugin_api_compatible
-from wikiops_sdk.compat import CompatibilityError
-from wikiops_sdk.contracts import DocumentationPlugin
+from docops_sdk import PLUGIN_ENTRYPOINT_GROUP, ensure_plugin_api_compatible
+from docops_sdk.compat import CompatibilityError
+from docops_sdk.contracts import DocumentationPlugin
 
 
 class PluginManager:

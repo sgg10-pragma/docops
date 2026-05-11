@@ -7,9 +7,9 @@ import pytest
 from docops.core.exceptions import ConfigurationError
 from docops.core.plugin_manager import PluginManager
 from docops.core.plugin_resources import PackagePluginResourceProvider
-from wikiops_sdk.compat import PluginAPIIncompatibleError
-from wikiops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
-from wikiops_sdk.domain import ChangeSet
+from docops_sdk.compat import PluginAPIIncompatibleError
+from docops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
+from docops_sdk.domain import ChangeSet
 
 
 def _patch_entry_points(monkeypatch: pytest.MonkeyPatch, entry_points: list[Any]) -> None:

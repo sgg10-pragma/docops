@@ -5,7 +5,7 @@ import yaml
 from pydantic import BaseModel, Field
 
 from docops.core.exceptions import ConfigurationError
-from wikiops_sdk.domain import DocumentRef
+from docops_sdk.domain import DocumentRef
 
 
 class ProviderDefinition(BaseModel):
