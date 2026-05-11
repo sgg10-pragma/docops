@@ -2,11 +2,11 @@
 
 This file gives concrete workflows an agent can follow.
 
-## Workflow 1: Configure WikiOps from natural language
+## Workflow 1: Configure DocOps from natural language
 
 User intent example:
 
-> "Configura WikiOps para Azure DevOps Wiki con organization GrupoBancolombia, project Nequi y wiki Nequi.wiki"
+> "Configura DocOps para Azure DevOps Wiki con organization GrupoBancolombia, project Nequi y wiki Nequi.wiki"
 
 Agent workflow:
 
@@ -17,8 +17,8 @@ Agent workflow:
 5. If the workflow is plugin-driven, add profile-scoped plugin config only for that plugin
 6. Prefer plugin defaults unless there is a specific reason to override plugin settings
 6. Validate by using:
-   - `wikiops providers`
-   - `wikiops plugins`
+   - `docops providers`
+   - `docops plugins`
 
 ## Workflow 2: Read the current content of an existing page
 
@@ -32,13 +32,13 @@ Agent workflow:
 2. If the alias exists, run:
 
 ```bash
-wikiops docs get -c config.yaml -p test --alias sample_dp --output markdown
+docops docs get -c config.yaml -p test --alias sample_dp --output markdown
 ```
 
 3. If the alias does not exist but the path is known, run:
 
 ```bash
-wikiops docs get -c config.yaml -p test --path "/Known/Path" --output markdown
+docops docs get -c config.yaml -p test --path "/Known/Path" --output markdown
 ```
 
 4. Use JSON output when the caller is another tool or agent step that needs structure
@@ -54,13 +54,13 @@ Agent workflow:
 1. Confirm the plugin is installed:
 
 ```bash
-wikiops plugins
+docops plugins
 ```
 
 2. Confirm the provider exists:
 
 ```bash
-wikiops providers
+docops providers
 ```
 
 3. Always prepare the command with `--plugin <plugin_id>`
@@ -70,7 +70,7 @@ wikiops providers
 5. Run plan mode first:
 
 ```bash
-wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
+docops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
 ```
 
 6. Inspect:
@@ -80,11 +80,11 @@ wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_
 7. Only if persistence is intended, run:
 
 ```bash
-wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml --apply
+docops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml --apply
 ```
 
 8. Inspect `=== APPLY RESULT ===`
-9. Only after the apply command finishes, verify the resulting page with `wikiops docs get`
+9. Only after the apply command finishes, verify the resulting page with `docops docs get`
 
 ## Workflow 4: Host skill + plugin skill handoff
 
@@ -92,16 +92,16 @@ This is the most important compound workflow.
 
 User intent example:
 
-> "Ya existiendo una página de documentación, lee el contenido actual, propone cambios según el repo, genera el input del plugin y luego ejecuta WikiOps"
+> "Ya existiendo una página de documentación, lee el contenido actual, propone cambios según el repo, genera el input del plugin y luego ejecuta DocOps"
 
 Recommended sequence:
 
-1. Use this host skill to read the current page with `wikiops docs get`
+1. Use this host skill to read the current page with `docops docs get`
 2. Analyze the current content and the requested source changes
 3. Load the companion plugin skill for the target plugin
 4. Ask the plugin skill to produce the correct input YAML shape
 5. Return to this host skill
-6. Run `wikiops run` in plan mode with that YAML
+6. Run `docops run` in plan mode with that YAML
 7. Review the `ChangeSet` and diff
 8. Apply only if the user wants persistence
 9. Wait until apply fully completes
@@ -133,9 +133,9 @@ In the sample workspace:
 useful commands include:
 
 ```bash
-wikiops providers
-wikiops plugins
-wikiops docs get -c config.yaml -p test --alias sample_tribe --output markdown
-wikiops docs get -c config.yaml -p test --alias sample_dp --output json
-wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
+docops providers
+docops plugins
+docops docs get -c config.yaml -p test --alias sample_tribe --output markdown
+docops docs get -c config.yaml -p test --alias sample_dp --output json
+docops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
 ```
