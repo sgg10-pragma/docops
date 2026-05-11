@@ -2,8 +2,8 @@ from inspect import Parameter, signature
 from typing import Any, Dict, List
 from importlib.metadata import entry_points
 
-from wikiops.core.exceptions import ConfigurationError
-from wikiops.core.plugin_resources import PackagePluginResourceProvider
+from docops.core.exceptions import ConfigurationError
+from docops.core.plugin_resources import PackagePluginResourceProvider
 from wikiops_sdk import PLUGIN_ENTRYPOINT_GROUP, ensure_plugin_api_compatible
 from wikiops_sdk.compat import CompatibilityError
 from wikiops_sdk.contracts import DocumentationPlugin

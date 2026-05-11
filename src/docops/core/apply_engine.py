@@ -1,6 +1,6 @@
-from wikiops.core.asset_reference_rewriter import AssetReferenceRewriter
-from wikiops.core.asset_source_resolver import AssetSourceResolver
-from wikiops.core.exceptions import ConfigurationError
+from docops.core.asset_reference_rewriter import AssetReferenceRewriter
+from docops.core.asset_source_resolver import AssetSourceResolver
+from docops.core.exceptions import ConfigurationError
 from wikiops_sdk.contracts import DocumentProvider, PluginResourceProvider
 from wikiops_sdk.domain import (
     AppliedOperationResult,

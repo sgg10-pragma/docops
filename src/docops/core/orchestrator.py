@@ -18,16 +18,16 @@ from wikiops_sdk.domain import (
     WarningMessage,
 )
 
-from wikiops.core.asset_source_resolver import AssetSourceResolver
-from wikiops.core.asset_reference_rewriter import AssetReferenceRewriter
-from wikiops.core.diff_engine import DiffEngine
-from wikiops.core.apply_engine import ApplyEngine
-from wikiops.core.plugin_manager import PluginManager
-from wikiops.core.document_loader import DocumentLoader
-from wikiops.core.provider_manager import ProviderManager
-from wikiops.core.reference_resolver import ReferenceResolver
-from wikiops.core.config_loader import AppConfig, ConfigLoader
-from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
+from docops.core.asset_source_resolver import AssetSourceResolver
+from docops.core.asset_reference_rewriter import AssetReferenceRewriter
+from docops.core.diff_engine import DiffEngine
+from docops.core.apply_engine import ApplyEngine
+from docops.core.plugin_manager import PluginManager
+from docops.core.document_loader import DocumentLoader
+from docops.core.provider_manager import ProviderManager
+from docops.core.reference_resolver import ReferenceResolver
+from docops.core.config_loader import AppConfig, ConfigLoader
+from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
 
 
 class DefaultDocumentationOrchestrator:

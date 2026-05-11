@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from wikiops.core.config_loader import ProfileDefinition
-from wikiops.core.exceptions import ReferenceResolutionError
-from wikiops.core.reference_resolver import ReferenceResolver
+from docops.core.config_loader import ProfileDefinition
+from docops.core.exceptions import ReferenceResolutionError
+from docops.core.reference_resolver import ReferenceResolver
 
 
 def test_resolve_alias_returns_matching_ref(doc_ref_factory) -> None:

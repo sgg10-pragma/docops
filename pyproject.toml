@@ -31,14 +31,14 @@ Documentation = "https://github.com/sgg10/wikiops/tree/main/docs"
 Issues = "https://github.com/sgg10/wikiops/issues"
 
 [project.scripts]
-wikiops = "wikiops.cli.app:app"
+wikiops = "docops.cli.app:app"
 
 [project.entry-points."wikiops.providers"]
-azure_devops_wiki = "wikiops.providers.azure_devops:AzureDevOpsWikiProviderFactory"
+azure_devops_wiki = "docops.providers.azure_devops:AzureDevOpsWikiProviderFactory"
 
 [tool.poetry]
 packages = [
-    {include = "wikiops", from = "src"}
+    {include = "docops", from = "src"}
 ]
 version = "0.0.0"
 
@@ -55,7 +55,7 @@ test = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--strict-config --strict-markers -ra --cov=wikiops --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=90"
+addopts = "--strict-config --strict-markers -ra --cov=docops --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=90"
 testpaths = ["tests"]
 pythonpath = ["src"]
 xfail_strict = true
@@ -63,7 +63,7 @@ required_plugins = ["pytest-cov"]
 
 [tool.coverage.run]
 branch = true
-source = ["wikiops"]
+source = ["docops"]
 
 [tool.coverage.report]
 show_missing = true

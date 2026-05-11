@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 from types import SimpleNamespace
 
-from wikiops.cli import app as cli_app
-from wikiops.core.document_reader import DocumentReadResult
+from docops.cli import app as cli_app
+from docops.core.document_reader import DocumentReadResult
 from wikiops_sdk.domain import ApplyResult, AppliedOperationResult, OperationStatus
 
 
