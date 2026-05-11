@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from wikiops.core.config_loader import ConfigLoader
-from wikiops.core.exceptions import ConfigurationError
+from docops.core.config_loader import ConfigLoader
+from docops.core.exceptions import ConfigurationError
 from wikiops_sdk.domain import RefKind
 
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from wikiops.core.exceptions import ConfigurationError
+from docops.core.exceptions import ConfigurationError
 
 
 ASSET_KEY_PATTERN = r"[A-Za-z0-9._-]+"

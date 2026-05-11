@@ -5,8 +5,8 @@ from pathlib import Path
 import yaml
 import typer
 
-from wikiops.core.document_reader import DocumentReader
-from wikiops.core.orchestrator import DefaultDocumentationOrchestrator
+from docops.core.document_reader import DocumentReader
+from docops.core.orchestrator import DefaultDocumentationOrchestrator
 
 app = typer.Typer(
     help="WikiOps CLI - A tool for Markdown-based documentation automation."

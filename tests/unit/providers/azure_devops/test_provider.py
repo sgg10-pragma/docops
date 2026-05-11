@@ -5,8 +5,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from wikiops.core.exceptions import ConfigurationError
-from wikiops.providers.azure_devops.provider import (
+from docops.core.exceptions import ConfigurationError
+from docops.providers.azure_devops.provider import (
     AzureDevOpsWikiProvider,
     AzureDevOpsWikiProviderFactory,
     PatAzureDevOpsProviderSettings,
@@ -40,7 +40,7 @@ def settings() -> PatAzureDevOpsProviderSettings:
     return PatAzureDevOpsProviderSettings(
         provider_name="azure",
         organization="acme",
-        project="wikiops",
+        project="docops",
         wiki="engineering",
     )
 
@@ -52,7 +52,7 @@ def provider() -> AzureDevOpsWikiProvider:
 def test_pages_url_builds_expected_endpoint() -> None:
     assert (
         provider()._pages_url()
-        == "https://dev.azure.com/acme/wikiops/_apis/wiki/wikis/engineering/pages"
+        == "https://dev.azure.com/acme/docops/_apis/wiki/wikis/engineering/pages"
     )
 
 
@@ -96,7 +96,7 @@ def test_request_returns_response_for_expected_status(monkeypatch: pytest.Monkey
             )
             return FakeResponse(status_code=201, json_data={"ok": True})
 
-    monkeypatch.setattr("wikiops.providers.azure_devops.provider.httpx.Client", FakeClient)
+    monkeypatch.setattr("docops.providers.azure_devops.provider.httpx.Client", FakeClient)
     monkeypatch.setenv("AZDO_PAT", "secret-token")
 
     response = provider()._request(
@@ -126,7 +126,7 @@ def test_request_raises_on_unexpected_status(monkeypatch: pytest.MonkeyPatch) ->
         def request(self, method, url, params=None, headers=None, json=None, content=None):
             return FakeResponse(status_code=500, text="broken")
 
-    monkeypatch.setattr("wikiops.providers.azure_devops.provider.httpx.Client", FakeClient)
+    monkeypatch.setattr("docops.providers.azure_devops.provider.httpx.Client", FakeClient)
     monkeypatch.setenv("AZDO_PAT", "secret-token")
 
     with pytest.raises(ConfigurationError, match="status 500"):

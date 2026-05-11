@@ -8,7 +8,7 @@ from typing import Any, Optional, Dict, Set, List
 import httpx
 from pydantic import Field
 
-from wikiops.core.exceptions import ConfigurationError
+from docops.core.exceptions import ConfigurationError
 from wikiops_sdk.contracts import ProviderSettings
 from wikiops_sdk.domain import (
     Asset,

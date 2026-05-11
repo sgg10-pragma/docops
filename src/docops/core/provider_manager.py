@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Protocol, Type
 from importlib.metadata import entry_points
 
-from wikiops.core.exceptions import ConfigurationError
+from docops.core.exceptions import ConfigurationError
 from wikiops_sdk import PROVIDER_ENTRYPOINT_GROUP, ensure_provider_api_compatible
 from wikiops_sdk.compat import CompatibilityError
 from wikiops_sdk.contracts import DocumentProvider, ProviderSettings

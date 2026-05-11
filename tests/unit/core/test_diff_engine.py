@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from wikiops.core.diff_engine import DiffEngine
+from docops.core.diff_engine import DiffEngine
 from wikiops_sdk.domain import (
     CreateDocumentOperation,
     PluginResourceAssetSource,
