@@ -221,7 +221,7 @@ pydantic = ">=2.12.5,<3.0.0"
 
 [package.source]
 type = "git"
-url = "https://github.com/sgg10-pragma/docops-sdk.git"
+url = "https://github.com/somospragma/docops-sdk.git"
 reference = "v1.0.0"
 resolved_reference = "2fa3241d7d1b4478c15ab4b30cb4102217a00156"
 
@@ -830,4 +830,4 @@ typing-extensions = ">=4.12.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "c71aa4ea2349964bb3c03306ecd7b5bba46a45ea2cd7ce38b542667c36366b7b"
+content-hash = "9767e51d91048409c23841a6e487234781ff8355a9de9138f4aad59eddd8e21c"

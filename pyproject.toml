@@ -40,7 +40,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-docops-sdk = {git = "https://github.com/sgg10-pragma/docops-sdk.git", tag = "v1.0.0"}
+docops-sdk = {git = "https://github.com/somospragma/docops-sdk.git", tag = "v1.0.0"}
 
 [dependency-groups]
 test = [
