@@ -48,9 +48,23 @@ Canonical SDK documentation lives in the separate SDK repository:
 - [`docops-sdk contracts API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/contracts.md)
 - [`docops-sdk domain API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/domain.md)
 
+## Installation
+
+Install from the GitHub repository URL or from a locally built wheel:
+
+```bash
+# From GitHub (requires network access)
+pip install git+https://github.com/sgg10-pragma/docops.git
+
+# From a locally built wheel
+pip install dist/docops-1.0.0-py3-none-any.whl
+```
+
+Note: no auto-publish CI exists; there is no release on PyPI. Versioning is manual via `pyproject.toml`.
+
 ## Quick Start
 
-Install the host and its runtime dependencies:
+For local development, install the host and its runtime dependencies:
 
 ```bash
 poetry install --with test

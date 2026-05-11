@@ -31,7 +31,7 @@ Build / packaging checks (mirrors CI `build-check` job):
 poetry check
 poetry build
 python -m twine check dist/*
-python scripts/smoke_test_host.py --expected-distribution-version "$(python scripts/read_built_version.py)"
+python scripts/smoke_test_host.py --expected-distribution-version "$(poetry version -s)"
 ```
 
 CLI surface (after `poetry install`):
@@ -133,7 +133,7 @@ Treat as internal (subject to change): `_plan_internal` and other underscore hel
 - `pytest` on Python 3.10 / 3.11 / 3.12.
 - `poetry check`, `poetry build`, `twine check`, then installs the wheel into a fresh venv and runs `scripts/smoke_test_host.py`. Run that smoke script locally before any release-touching change.
 
-Version is dynamic via `poetry-dynamic-versioning` — never hand-edit `[tool.poetry] version`. Use `scripts/check_release_version.py` and `scripts/read_built_version.py` rather than parsing the file directly.
+Version is static in `pyproject.toml` (`[project] version`). Bump it manually when cutting a release. There is no PyPI publish pipeline — distribution is GitHub-only (`pip install git+https://github.com/sgg10-pragma/docops.git`).
 
 ## Operator-Facing Skill
 
