@@ -2,7 +2,7 @@
 
 This page maps the main runtime modules of the host and explains how they interact.
 
-## `wikiops.cli.app`
+## `docops.cli.app`
 
 ### Purpose
 
@@ -24,7 +24,7 @@ Defines the public CLI entry point.
 - instantiates `DocumentReader`
 - delegates plan, apply, and read-only inspection logic to the core runtime
 
-## `wikiops.core.orchestrator`
+## `docops.core.orchestrator`
 
 ### Purpose
 
@@ -58,7 +58,7 @@ Implements the host execution lifecycle.
 - `DiffEngine`
 - `ApplyEngine`
 
-## `wikiops.core.config_loader`
+## `docops.core.config_loader`
 
 ### Purpose
 
@@ -78,7 +78,7 @@ Loads and validates YAML configuration.
 - `AppConfig`
 - `ConfigLoader`
 
-## `wikiops.core.plugin_manager`
+## `docops.core.plugin_manager`
 
 ### Purpose
 
@@ -86,7 +86,7 @@ Discovers and instantiates plugins.
 
 ### Responsibilities
 
-- load plugin classes from `wikiops.plugins`
+- load plugin classes from `docops.plugins`
 - validate plugin API compatibility
 - validate plugin contract conformance
 - detect duplicate plugin IDs
@@ -96,7 +96,7 @@ Discovers and instantiates plugins.
 
 The plugin constructor compatibility behavior is part of the host runtime, not part of the SDK contract itself.
 
-## `wikiops.core.plugin_resources`
+## `docops.core.plugin_resources`
 
 ### Purpose
 
@@ -113,7 +113,7 @@ Expose plugin package files through the SDK resource contract.
 
 Paths are relative to the plugin package root, not to a forced `resources/` root.
 
-## `wikiops.core.document_reader`
+## `docops.core.document_reader`
 
 ### Purpose
 
@@ -134,7 +134,7 @@ Fetch the current state of a single document through the selected provider.
 - `DocumentReadResult`
 - `DocumentReader`
 
-## `wikiops.core.provider_manager`
+## `docops.core.provider_manager`
 
 ### Purpose
 
@@ -142,7 +142,7 @@ Discovers provider factories and creates provider instances.
 
 ### Responsibilities
 
-- load provider factories from `wikiops.providers`
+- load provider factories from `docops.providers`
 - validate duplicate provider IDs
 - validate typed settings when `settings_model` is present
 - validate provider API compatibility
@@ -153,7 +153,7 @@ Discovers provider factories and creates provider instances.
 
 The current host expects provider entry points to expose a factory class rather than a provider instance directly.
 
-## `wikiops.core.reference_resolver`
+## `docops.core.reference_resolver`
 
 ### Purpose
 
@@ -164,7 +164,7 @@ Resolve logical aliases from a selected profile.
 - map profile aliases to declared `DocumentRef` values
 - fail early when a required alias is missing
 
-## `wikiops.core.document_loader`
+## `docops.core.document_loader`
 
 ### Purpose
 
@@ -176,7 +176,7 @@ Fetch current documents through the provider.
 - ask the provider for the corresponding current document
 - return an alias-keyed document map
 
-## `wikiops.core.diff_engine`
+## `docops.core.diff_engine`
 
 ### Purpose
 
@@ -191,7 +191,7 @@ Build preview output for planned changes.
 
 The current diff model is strongest for updates against existing document content.
 
-## `wikiops.core.apply_engine`
+## `docops.core.apply_engine`
 
 ### Purpose
 
@@ -202,7 +202,7 @@ Delegate persistence to the selected provider.
 - call `provider.apply_changes(changeset)`
 - return the provider `ApplyResult`
 
-## `wikiops.providers.azure_devops.provider`
+## `docops.providers.azure_devops.provider`
 
 ### Purpose
 

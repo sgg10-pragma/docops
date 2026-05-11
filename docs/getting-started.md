@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`wikiops` is the host application for documentation-as-code workflows in the WikiOps ecosystem.
+`docops` is the host application for documentation-as-code workflows in the DocOps ecosystem.
 
 If you are doing any of the following, this repository is the runtime you use:
 
@@ -15,11 +15,11 @@ If you are doing any of the following, this repository is the runtime you use:
 
 The host is organized around a small runtime surface:
 
-- `wikiops.cli`
+- `docops.cli`
   - command-line interface
-- `wikiops.core`
+- `docops.core`
   - orchestration, configuration loading, reference resolution, diffing, and apply delegation
-- `wikiops.providers`
+- `docops.providers`
   - built-in provider implementations and provider factories
 
 ## What The Host Does Not Do
@@ -33,7 +33,7 @@ It does not define:
 - canonical domain models such as `ChangeSet` or `ExecutionContext`
 - plugin-specific documentation business logic
 
-Those belong to `wikiops-sdk` and external extension packages.
+Those belong to `docops-sdk` and external extension packages.
 
 ## Installation
 
@@ -46,26 +46,26 @@ poetry install --with test
 Run the CLI through Poetry:
 
 ```bash
-poetry run wikiops --help
+poetry run docops --help
 ```
 
 ## Current Built-In Components
 
 The current host ships with:
 
-- the `wikiops` CLI
+- the `docops` CLI
 - the default documentation orchestrator
 - the built-in `azure_devops_wiki` provider factory
 
-The current host does not ship with built-in plugins. Plugins are expected to be installed separately and discovered through the `wikiops.plugins` entry point group.
+The current host does not ship with built-in plugins. Plugins are expected to be installed separately and discovered through the `docops.plugins` entry point group.
 
 ## Minimal Execution Example
 
 ### Step 1: Inspect Available Extensions
 
 ```bash
-poetry run wikiops plugins
-poetry run wikiops providers
+poetry run docops plugins
+poetry run docops providers
 ```
 
 Use the plugin list to find the exact plugin ID you want to execute.
@@ -103,8 +103,8 @@ team_name: Platform
 ### Step 4: Run In Plan Mode
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml
@@ -118,8 +118,8 @@ This produces:
 ### Step 5: Run In Apply Mode
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml \

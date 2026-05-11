@@ -1,6 +1,6 @@
 # Host And SDK Relationship
 
-This page explains the boundary between `wikiops`, the host repository, and `wikiops-sdk`, the public SDK repository.
+This page explains the boundary between `docops`, the host repository, and `docops-sdk`, the public SDK repository.
 
 ## What Belongs To The SDK
 
@@ -16,10 +16,10 @@ That includes:
 
 Canonical SDK documentation:
 
-- [`wikiops-sdk documentation index`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/index.md)
-- [`wikiops-sdk contracts API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/contracts.md)
-- [`wikiops-sdk domain API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/domain.md)
-- [`wikiops-sdk compatibility`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/compatibility.md)
+- [`docops-sdk documentation index`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/index.md)
+- [`docops-sdk contracts API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/contracts.md)
+- [`docops-sdk domain API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/domain.md)
+- [`docops-sdk compatibility`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/compatibility.md)
 
 ## What Belongs To The Host
 
@@ -82,14 +82,14 @@ This repository documents host-side execution and runtime policy around those co
 
 ## Recommended Reading
 
-If you are integrating with `wikiops`, read these in order:
+If you are integrating with `docops`, read these in order:
 
 1. [`architecture.md`](architecture.md)
 2. [`execution-flow.md`](execution-flow.md)
 3. [`guides/build-a-plugin.md`](guides/build-a-plugin.md) or [`guides/build-a-provider.md`](guides/build-a-provider.md)
 4. The corresponding SDK guide:
-   - [`Write A Plugin`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-plugin.md)
-   - [`Write A Provider`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-provider.md)
+   - [`Write A Plugin`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-plugin.md)
+   - [`Write A Provider`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-provider.md)
 
 ## Related Documentation
 

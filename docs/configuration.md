@@ -11,7 +11,7 @@ The host uses YAML configuration to describe:
 - which document references are available in each profile
 - which plugin configuration payloads should be applied for a profile
 
-The current configuration model is implemented by `wikiops.core.config_loader.ConfigLoader`.
+The current configuration model is implemented by `docops.core.config_loader.ConfigLoader`.
 
 ## Top-Level Sections
 
@@ -109,7 +109,7 @@ refs:
       path: /Engineering/Teams
 ```
 
-The host validates each ref using the SDK domain model, which means refs must match the `DocumentRef` shape expected by `wikiops-sdk`.
+The host validates each ref using the SDK domain model, which means refs must match the `DocumentRef` shape expected by `docops-sdk`.
 
 ## Plugin Configuration
 

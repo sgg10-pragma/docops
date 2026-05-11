@@ -4,12 +4,12 @@ These are runtime facts the agent should keep in mind.
 
 ## 1. The host ships no built-in plugins
 
-`wikiops` includes the CLI and the built-in Azure DevOps provider, but not business plugins.
+`docops` includes the CLI and the built-in Azure DevOps provider, but not business plugins.
 
 Always verify plugin availability with:
 
 ```bash
-wikiops plugins
+docops plugins
 ```
 
 ## 2. Use the plugin skill for plugin input shape
@@ -20,7 +20,7 @@ If the user asks for a plugin-specific YAML and the structure is not already kno
 
 ## 3. `docs get` requires exactly one selector
 
-`wikiops docs get` must receive exactly one of:
+`docops docs get` must receive exactly one of:
 
 - `--alias`
 - `--path`
@@ -45,7 +45,7 @@ AZDO_PAT
 
 ## 6. Plan before apply
 
-`wikiops run --apply` mutates the remote documentation system.
+`docops run --apply` mutates the remote documentation system.
 
 Default behavior for agents should be:
 
@@ -53,12 +53,12 @@ Default behavior for agents should be:
 2. inspect `ChangeSet` and diff
 3. apply only if the user intends persistence
 
-## 7. `wikiops run` always needs `--plugin`
+## 7. `docops run` always needs `--plugin`
 
 If the workflow is plugin-driven, do not forget:
 
 ```bash
-wikiops run --plugin <plugin_id> ...
+docops run --plugin <plugin_id> ...
 ```
 
 The host cannot infer the plugin from the input file alone.
@@ -71,9 +71,9 @@ If a plugin uses local assets, the plugin config may require:
 
 Without that, local file assets can fail before apply or during apply.
 
-## 9. `wikiops` and `wikiops-sdk` must stay aligned
+## 9. `docops` and `docops-sdk` must stay aligned
 
-If the host is loaded from a local checkout but `wikiops-sdk` comes from an older wheel in the virtualenv, runtime imports can fail.
+If the host is loaded from a local checkout but `docops-sdk` comes from an older wheel in the virtualenv, runtime imports can fail.
 
 If you see host/SDK API drift, reinstall the local SDK into the same environment.
 
@@ -85,14 +85,14 @@ Do not guess resource paths from host intuition alone; inspect the plugin repo o
 
 ## 11. Do not verify before apply completes
 
-If you run `wikiops run --apply`, wait for the command to finish and inspect `=== APPLY RESULT ===` before trying to read the resulting page. Reading too early can produce false 404s or stale content.
+If you run `docops run --apply`, wait for the command to finish and inspect `=== APPLY RESULT ===` before trying to read the resulting page. Reading too early can produce false 404s or stale content.
 
-## 12. `wikiops` can be executed directly or through Poetry
+## 12. `docops` can be executed directly or through Poetry
 
-In installed environments, prefer `wikiops ...`.
+In installed environments, prefer `docops ...`.
 
 In source checkouts, it may be necessary to use:
 
 ```bash
-poetry run wikiops ...
+poetry run docops ...
 ```

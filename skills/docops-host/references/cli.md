@@ -1,34 +1,34 @@
 # CLI Reference
 
-This file documents the current `wikiops` CLI behavior that an agent should rely on.
+This file documents the current `docops` CLI behavior that an agent should rely on.
 
 ## Preferred command prefix
 
-Use `wikiops` if the executable is already installed in the current environment.
+Use `docops` if the executable is already installed in the current environment.
 
-If the project is being run from a Poetry-managed checkout and `wikiops` is not on `PATH`, use:
+If the project is being run from a Poetry-managed checkout and `docops` is not on `PATH`, use:
 
 ```bash
-poetry run wikiops
+poetry run docops
 ```
 
 The command surface is the same either way.
 
 ## Available commands
 
-- `wikiops plugins`
-- `wikiops providers`
-- `wikiops docs get`
-- `wikiops run`
+- `docops plugins`
+- `docops providers`
+- `docops docs get`
+- `docops run`
 
-## `wikiops plugins`
+## `docops plugins`
 
 Lists discovered plugins.
 
 Example:
 
 ```bash
-wikiops plugins
+docops plugins
 ```
 
 Current output shape:
@@ -39,19 +39,19 @@ Current output shape:
 
 Use this command before attempting to run a plugin.
 
-## `wikiops providers`
+## `docops providers`
 
 Lists discovered provider types.
 
 Example:
 
 ```bash
-wikiops providers
+docops providers
 ```
 
 Use this command to confirm that the built-in `azure_devops_wiki` provider is available.
 
-## `wikiops docs get`
+## `docops docs get`
 
 Fetches the current state of a single page through the provider configured for a profile.
 
@@ -70,7 +70,7 @@ Optional flags:
 Prefer alias-based reads when the page already exists in `profile.refs`.
 
 ```bash
-wikiops docs get -c config.yaml -p test --alias sample_dp
+docops docs get -c config.yaml -p test --alias sample_dp
 ```
 
 ### Read by path
@@ -78,7 +78,7 @@ wikiops docs get -c config.yaml -p test --alias sample_dp
 Use this when the config does not already define a ref alias for the page.
 
 ```bash
-wikiops docs get -c config.yaml -p test --path "/Engineering/Platform/Runbook"
+docops docs get -c config.yaml -p test --path "/Engineering/Platform/Runbook"
 ```
 
 ### Output modes
@@ -89,11 +89,11 @@ wikiops docs get -c config.yaml -p test --path "/Engineering/Platform/Runbook"
 Examples:
 
 ```bash
-wikiops docs get -c config.yaml -p test --alias sample_dp --output json
-wikiops docs get -c config.yaml -p test --alias sample_dp --output markdown
+docops docs get -c config.yaml -p test --alias sample_dp --output json
+docops docs get -c config.yaml -p test --alias sample_dp --output markdown
 ```
 
-## `wikiops run`
+## `docops run`
 
 Executes a plugin planning flow and optionally applies the changes.
 
@@ -113,7 +113,7 @@ Optional flags:
 Without `--apply`, the host only plans.
 
 ```bash
-wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
+docops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml
 ```
 
 Expected sections:
@@ -126,7 +126,7 @@ Expected sections:
 With `--apply`, the host also persists changes.
 
 ```bash
-wikiops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml --apply
+docops run -c config.yaml -p test --plugin nequi.datamind -i datamind_commands_inputs/create_dp_input.yaml --apply
 ```
 
 Expected sections:
@@ -143,9 +143,9 @@ Expected sections:
 
 ## Recommended runtime sequence
 
-1. `wikiops providers`
-2. `wikiops plugins`
-3. `wikiops docs get` if current page state matters
-4. `wikiops run` in plan mode
+1. `docops providers`
+2. `docops plugins`
+3. `docops docs get` if current page state matters
+4. `docops run` in plan mode
 5. Inspect `ChangeSet` and diff
-6. `wikiops run ... --apply` only if persistence is desired and the plan is acceptable
+6. `docops run ... --apply` only if persistence is desired and the plan is acceptable

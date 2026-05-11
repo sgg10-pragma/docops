@@ -79,7 +79,7 @@ Use refs when:
 
 - the same page will be read or updated repeatedly
 - a plugin expects aliases through `required_ref_aliases(...)`
-- you want `wikiops docs get --alias ...`
+- you want `docops docs get --alias ...`
 
 ## `plugins`
 
@@ -109,7 +109,7 @@ See:
 
 ## Practical guidance for agents
 
-When the user asks to "configure wikiops":
+When the user asks to "configure docops":
 
 1. Identify the desired provider
 2. Create or update a provider entry under `providers`
