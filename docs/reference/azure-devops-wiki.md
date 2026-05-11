@@ -4,12 +4,12 @@ This page documents the built-in Azure DevOps Wiki provider shipped by the host.
 
 ## Purpose
 
-The current built-in provider integrates WikiOps with Azure DevOps Wiki through the REST API.
+The current built-in provider integrates DocOps with Azure DevOps Wiki through the REST API.
 
 It is implemented in:
 
-- `wikiops.providers.azure_devops.provider.AzureDevOpsWikiProvider`
-- `wikiops.providers.azure_devops.provider.AzureDevOpsWikiProviderFactory`
+- `docops.providers.azure_devops.provider.AzureDevOpsWikiProvider`
+- `docops.providers.azure_devops.provider.AzureDevOpsWikiProviderFactory`
 
 ## Provider ID
 
@@ -184,4 +184,4 @@ The current provider is intentionally focused:
 - [`../configuration.md`](../configuration.md)
 - [`../guides/build-a-provider.md`](../guides/build-a-provider.md)
 - [`core-modules.md`](core-modules.md)
-- [`wikiops-sdk provider guide`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-provider.md)
+- [`docops-sdk provider guide`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-provider.md)

@@ -16,7 +16,7 @@ This page makes that line explicit.
 The following behaviors are stable enough to rely on as current host behavior:
 
 - CLI commands, options, and exit codes
-- the host-managed read-only `wikiops docs get` flow
+- the host-managed read-only `docops docs get` flow
 - YAML configuration structure for providers, profiles, refs, and plugin config
 - plugin and provider discovery through the SDK-defined entry point groups
 - runtime compatibility checks for Python, plugins, and providers
@@ -29,7 +29,7 @@ The following behaviors are stable enough to rely on as current host behavior:
 
 ## Host Conventions Rather Than SDK Guarantees
 
-The following conventions belong to the host, not to `wikiops-sdk`:
+The following conventions belong to the host, not to `docops-sdk`:
 
 - plugin constructor compatibility behavior during resource injection
 - provider factory loading through zero-argument factory classes
