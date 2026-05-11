@@ -1,18 +1,18 @@
 [
   {
-    "query": "Configura wikiops para Azure DevOps Wiki con organization GrupoBancolombia, project Nequi y wiki Nequi.wiki",
+    "query": "Configura docops para Azure DevOps Wiki con organization GrupoBancolombia, project Nequi y wiki Nequi.wiki",
     "should_trigger": true
   },
   {
-    "query": "Quiero crear o actualizar mi config.yaml de wikiops para usar el provider azdo y agregar refs para sample_tribe y sample_dp",
+    "query": "Quiero crear o actualizar mi config.yaml de docops para usar el provider azdo y agregar refs para sample_tribe y sample_dp",
     "should_trigger": true
   },
   {
-    "query": "Muéstrame qué plugins y providers tengo instalados en wikiops",
+    "query": "Muéstrame qué plugins y providers tengo instalados en docops",
     "should_trigger": true
   },
   {
-    "query": "Lee el contenido actual de la página sample_dp usando wikiops docs get",
+    "query": "Lee el contenido actual de la página sample_dp usando docops docs get",
     "should_trigger": true
   },
   {
@@ -20,15 +20,15 @@
     "should_trigger": true
   },
   {
-    "query": "Ya tengo el input generado por la skill del plugin, ahora corre wikiops run y aplícalo si el plan sale bien",
+    "query": "Ya tengo el input generado por la skill del plugin, ahora corre docops run y aplícalo si el plan sale bien",
     "should_trigger": true
   },
   {
-    "query": "Configura solo el provider de Azure DevOps en wikiops, sin meter todavía settings del plugin",
+    "query": "Configura solo el provider de Azure DevOps en docops, sin meter todavía settings del plugin",
     "should_trigger": true
   },
   {
-    "query": "Ejecuta el plugin nequi.datamind correctamente con wikiops run y revisa el diff antes de aplicar",
+    "query": "Ejecuta el plugin nequi.datamind correctamente con docops run y revisa el diff antes de aplicar",
     "should_trigger": true
   },
   {
@@ -40,7 +40,7 @@
     "should_trigger": false
   },
   {
-    "query": "Quiero escribir un nuevo provider para wikiops-sdk",
+    "query": "Quiero escribir un nuevo provider para docops-sdk",
     "should_trigger": false
   },
   {

@@ -67,9 +67,9 @@ jobs:
 
       - name: Smoke test built wheel
         run: |
-          PACKAGE_VERSION="$(python scripts/read_built_version.py)"
           python -m venv .venv-smoke
           . .venv-smoke/bin/activate
           python -m pip install --upgrade pip
+          python -m pip install "git+https://github.com/sgg10-pragma/docops-sdk.git@v1.0.0"
           python -m pip install dist/*.whl
-          python scripts/smoke_test_host.py --expected-distribution-version "$PACKAGE_VERSION"
+          python scripts/smoke_test_host.py --expected-distribution-version "$(poetry version -s)"

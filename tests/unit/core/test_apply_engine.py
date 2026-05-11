@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from wikiops.core.apply_engine import ApplyEngine
-from wikiops_sdk.domain import (
+from docops.core.apply_engine import ApplyEngine
+from docops_sdk.domain import (
     ApplyResult,
     AppliedOperationResult,
     Asset,

@@ -207,6 +207,25 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
 
 [[package]]
+name = "docops-sdk"
+version = "1.0.0"
+description = "Public SDK for DocOps plugins and integrations. Provides the shared contracts, domain models, compatibility rules, and extension interfaces needed to build providers and documentation plugins."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = []
+develop = false
+
+[package.dependencies]
+pydantic = ">=2.12.5,<3.0.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/sgg10-pragma/docops-sdk.git"
+reference = "v1.0.0"
+resolved_reference = "2fa3241d7d1b4478c15ab4b30cb4102217a00156"
+
+[[package]]
 name = "exceptiongroup"
 version = "1.3.1"
 description = "Backport of PEP 654 (exception groups)"
@@ -808,22 +827,7 @@ files = [
 [package.dependencies]
 typing-extensions = ">=4.12.0"
 
-[[package]]
-name = "wikiops-sdk"
-version = "1.1.0"
-description = "Public SDK for WikiOps plugins and integrations. Provides the shared contracts, domain models, compatibility rules, and extension interfaces needed to build providers and documentation plugins."
-optional = false
-python-versions = ">=3.10"
-groups = ["main"]
-files = [
-    {file = "wikiops_sdk-1.1.0-py3-none-any.whl", hash = "sha256:eb6a922062e6f77a0d71cc7583e14306ee89471c1a2898b43b62c35975b0776e"},
-    {file = "wikiops_sdk-1.1.0.tar.gz", hash = "sha256:f840825b994042e134dc6b16f3aedb7dcda9997cd32ad23a4360733a4ec71915"},
-]
-
-[package.dependencies]
-pydantic = ">=2.12.5,<3.0.0"
-
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "2a09c96be22814a3bac5de2d5d6f3895271e596246d1c86d9bc03fd03f92cecf"
+content-hash = "c71aa4ea2349964bb3c03306ecd7b5bba46a45ea2cd7ce38b542667c36366b7b"

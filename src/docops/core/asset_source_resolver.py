@@ -5,9 +5,9 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from wikiops.core.exceptions import ConfigurationError
-from wikiops_sdk.contracts import PluginResourceProvider
-from wikiops_sdk.domain import (
+from docops.core.exceptions import ConfigurationError
+from docops_sdk.contracts import PluginResourceProvider
+from docops_sdk.domain import (
     AssetPathBase,
     AssetPolicy,
     ExecutionContext,

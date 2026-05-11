@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from wikiops.core.plugin_resources import PackagePluginResourceProvider
+from docops.core.plugin_resources import PackagePluginResourceProvider
 
 
 def test_from_entry_point_reads_packaged_resources(entry_point_factory) -> None:

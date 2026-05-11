@@ -5,11 +5,11 @@ from typing import Any
 import pytest
 from pydantic import Field
 
-from wikiops.core.exceptions import ConfigurationError
-from wikiops.core.provider_manager import ProviderManager
-from wikiops_sdk.compat import ProviderAPIIncompatibleError
-from wikiops_sdk.contracts import ProviderSettings
-from wikiops_sdk.domain import (
+from docops.core.exceptions import ConfigurationError
+from docops.core.provider_manager import ProviderManager
+from docops_sdk.compat import ProviderAPIIncompatibleError
+from docops_sdk.contracts import ProviderSettings
+from docops_sdk.domain import (
     ApplyResult,
     Asset,
     AssetRef,
@@ -24,7 +24,7 @@ from wikiops_sdk.domain import (
 
 def _patch_entry_points(monkeypatch: pytest.MonkeyPatch, entry_points: list[Any]) -> None:
     monkeypatch.setattr(
-        "wikiops.core.provider_manager.entry_points",
+        "docops.core.provider_manager.entry_points",
         lambda **_: entry_points,
     )
 
@@ -314,7 +314,7 @@ def test_load_is_idempotent(
         calls["count"] += 1
         return [entry_point_factory("demo-provider", DemoProviderFactory)]
 
-    monkeypatch.setattr("wikiops.core.provider_manager.entry_points", _entry_points)
+    monkeypatch.setattr("docops.core.provider_manager.entry_points", _entry_points)
     manager = ProviderManager()
 
     manager.load()

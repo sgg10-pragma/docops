@@ -1,6 +1,6 @@
-# WikiOps Documentation
+# DocOps Documentation
 
-This documentation describes the current implementation of `wikiops`, the host application of the WikiOps ecosystem.
+This documentation describes the current implementation of `docops`, the host application of the DocOps ecosystem.
 
 It is written for:
 
@@ -12,7 +12,7 @@ It is written for:
 
 ## What The Host Is
 
-`wikiops` is the orchestration and runtime layer of the ecosystem.
+`docops` is the orchestration and runtime layer of the ecosystem.
 
 It is responsible for:
 
@@ -28,7 +28,7 @@ It is responsible for:
 
 ## What The Host Is Not
 
-`wikiops` is not the SDK contract layer.
+`docops` is not the SDK contract layer.
 
 It does not define the canonical public models for:
 
@@ -38,7 +38,7 @@ It does not define the canonical public models for:
 - `DocumentationPlugin`
 - `DocumentProvider`
 
-Those belong to `wikiops-sdk`.
+Those belong to `docops-sdk`.
 
 It also does not contain built-in documentation plugins. Plugin business logic is expected to live in separate packages.
 
@@ -79,7 +79,7 @@ It also does not contain built-in documentation plugins. Plugin business logic i
 2. [`sdk-relationship.md`](sdk-relationship.md)
 3. [`guides/build-a-plugin.md`](guides/build-a-plugin.md)
 4. [`reference/core-modules.md`](reference/core-modules.md)
-5. [`wikiops-sdk plugin guide`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-plugin.md)
+5. [`docops-sdk plugin guide`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-plugin.md)
 
 ### If You Are Writing A Provider
 
@@ -87,7 +87,7 @@ It also does not contain built-in documentation plugins. Plugin business logic i
 2. [`sdk-relationship.md`](sdk-relationship.md)
 3. [`guides/build-a-provider.md`](guides/build-a-provider.md)
 4. [`reference/azure-devops-wiki.md`](reference/azure-devops-wiki.md)
-5. [`wikiops-sdk provider guide`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-provider.md)
+5. [`docops-sdk provider guide`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-provider.md)
 
 ### If You Maintain The Host
 
@@ -95,7 +95,7 @@ It also does not contain built-in documentation plugins. Plugin business logic i
 2. [`execution-flow.md`](execution-flow.md)
 3. [`reference/core-modules.md`](reference/core-modules.md)
 4. [`reference/internal-boundaries.md`](reference/internal-boundaries.md)
-5. [`wikiops-sdk architecture`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/architecture.md)
+5. [`docops-sdk architecture`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/architecture.md)
 
 ## Documentation Scope
 
@@ -104,7 +104,7 @@ This documentation is implementation-focused.
 It explains:
 
 - how the current host works
-- how it uses `wikiops-sdk`
+- how it uses `docops-sdk`
 - which runtime behaviors are stable enough to rely on
 - which behaviors are host conventions rather than SDK guarantees
 

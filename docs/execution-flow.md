@@ -4,7 +4,7 @@ This page describes how the current host processes a command from configuration 
 
 ## Command-Level Flow
 
-The main plan/apply CLI workflow is implemented by `wikiops.cli.app` and delegated to `wikiops.core.orchestrator.DefaultDocumentationOrchestrator`.
+The main plan/apply CLI workflow is implemented by `docops.cli.app` and delegated to `docops.core.orchestrator.DefaultDocumentationOrchestrator`.
 
 At a high level, the host executes this sequence:
 
@@ -24,7 +24,7 @@ CLI command
 
 ## Read-Only Document Inspection Flow
 
-`wikiops docs get` follows a smaller host-managed read path implemented by `wikiops.core.document_reader.DocumentReader`.
+`docops docs get` follows a smaller host-managed read path implemented by `docops.core.document_reader.DocumentReader`.
 
 At a high level, the host executes this sequence:
 
@@ -43,7 +43,7 @@ CLI command
 
 ### 1. The CLI Parses The Command
 
-`wikiops run` reads:
+`docops run` reads:
 
 - `--config`
 - `--profile`
@@ -77,7 +77,7 @@ If either is missing, the run fails before plugin execution begins.
 
 ### 5. The Provider Is Created
 
-`ProviderManager` loads provider factories through the `wikiops.providers` entry point group and creates the requested provider.
+`ProviderManager` loads provider factories through the `docops.providers` entry point group and creates the requested provider.
 
 During this phase, the host validates:
 
@@ -88,7 +88,7 @@ During this phase, the host validates:
 
 ### 6. The Plugin Is Loaded
 
-`PluginManager` loads plugin classes through the `wikiops.plugins` entry point group and instantiates them.
+`PluginManager` loads plugin classes through the `docops.plugins` entry point group and instantiates them.
 
 During this phase, the host validates:
 

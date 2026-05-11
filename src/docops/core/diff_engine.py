@@ -1,7 +1,7 @@
 from typing import Dict, List
 from difflib import unified_diff
 
-from wikiops_sdk.domain import ChangeSet, PutAssetOperation, UpdateDocumentOperation
+from docops_sdk.domain import ChangeSet, PutAssetOperation, UpdateDocumentOperation
 
 
 class DiffEngine:

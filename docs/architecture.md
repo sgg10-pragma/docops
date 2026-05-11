@@ -1,14 +1,14 @@
 # Architecture
 
-## WikiOps Ecosystem Overview
+## DocOps Ecosystem Overview
 
-The WikiOps ecosystem is intentionally split across different concerns:
+The DocOps ecosystem is intentionally split across different concerns:
 
-- `wikiops-sdk`
+- `docops-sdk`
   - public contracts
   - portable domain models
   - compatibility rules
-- `wikiops` host
+- `docops` host
   - orchestration
   - extension discovery and loading
   - configuration handling
@@ -94,7 +94,7 @@ This means:
 The current host repository is organized around these runtime modules:
 
 ```text
-src/wikiops/
+src/docops/
   cli/
     app.py
   core/
@@ -123,7 +123,7 @@ load config -> load provider -> load plugin -> validate compatibility
 -> plan changes -> render diff -> optionally apply changes
 ```
 
-That flow is implemented primarily by `wikiops.core.orchestrator.DefaultDocumentationOrchestrator`.
+That flow is implemented primarily by `docops.core.orchestrator.DefaultDocumentationOrchestrator`.
 
 ## Design Principles
 
@@ -171,4 +171,4 @@ The current host is intentionally focused:
 - [`configuration.md`](configuration.md)
 - [`sdk-relationship.md`](sdk-relationship.md)
 - [`reference/core-modules.md`](reference/core-modules.md)
-- [`wikiops-sdk architecture`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/architecture.md)
+- [`docops-sdk architecture`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/architecture.md)

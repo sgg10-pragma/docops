@@ -1,17 +1,17 @@
 # Using The CLI
 
-This guide documents the current `wikiops` command-line interface.
+This guide documents the current `docops` command-line interface.
 
 ## Command Surface
 
 The host currently exposes four command entries:
 
-- `wikiops plugins`
-- `wikiops providers`
-- `wikiops docs get`
-- `wikiops run`
+- `docops plugins`
+- `docops providers`
+- `docops docs get`
+- `docops run`
 
-## `wikiops plugins`
+## `docops plugins`
 
 Lists discovered plugin instances.
 
@@ -24,24 +24,24 @@ Current output format:
 Example:
 
 ```bash
-poetry run wikiops plugins
+poetry run docops plugins
 ```
 
 Use this command to confirm that an external plugin package is installed and discoverable before trying to execute it.
 
-## `wikiops providers`
+## `docops providers`
 
 Lists available provider implementation IDs.
 
 Example:
 
 ```bash
-poetry run wikiops providers
+poetry run docops providers
 ```
 
 Use this command to confirm that the built-in provider or any external provider package is discoverable.
 
-## `wikiops docs get`
+## `docops docs get`
 
 Fetches the current state of a single document through the provider configured for a profile.
 
@@ -62,8 +62,8 @@ Use `--alias` when the target document is already declared in `profile.refs`.
 Example:
 
 ```bash
-poetry run wikiops docs get \
-  --config wikiops.yaml \
+poetry run docops docs get \
+  --config docops.yaml \
   --profile default \
   --alias handbook
 ```
@@ -75,8 +75,8 @@ Use `--path` for ad hoc reads when the selected provider supports path resolutio
 Example:
 
 ```bash
-poetry run wikiops docs get \
-  --config wikiops.yaml \
+poetry run docops docs get \
+  --config docops.yaml \
   --profile default \
   --path "/engineering/platform/runbook"
 ```
@@ -96,7 +96,7 @@ Current JSON payload includes:
 
 Use `--output markdown` when you only want the current page content.
 
-## `wikiops run`
+## `docops run`
 
 Executes a planning flow and optionally applies the resulting change set.
 
@@ -118,8 +118,8 @@ Without `--apply`, the host runs in plan mode.
 Example:
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml
@@ -139,8 +139,8 @@ With `--apply`, the host also persists changes through the selected provider.
 Example:
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml \
@@ -175,11 +175,11 @@ team_name: Platform
 
 ## Recommended Workflow
 
-1. Run `wikiops plugins`.
-2. Run `wikiops providers`.
-3. Use `wikiops docs get` to inspect the current document state when needed.
+1. Run `docops plugins`.
+2. Run `docops providers`.
+3. Use `docops docs get` to inspect the current document state when needed.
 4. Prepare configuration and input YAML files.
-5. Run `wikiops run` in plan mode first.
+5. Run `docops run` in plan mode first.
 6. Inspect the `ChangeSet` and diff.
 7. Rerun with `--apply` when ready.
 

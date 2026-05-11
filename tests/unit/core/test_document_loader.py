@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from wikiops.core.document_loader import DocumentLoader
+from docops.core.document_loader import DocumentLoader
 
 
 class RecordingProvider:

@@ -1,11 +1,11 @@
 # Build A Plugin For This Host
 
-This guide explains the host-side expectations for documentation plugins loaded by `wikiops`.
+This guide explains the host-side expectations for documentation plugins loaded by `docops`.
 
 For the canonical plugin contract, read the SDK guide first:
 
-- [`wikiops-sdk Write A Plugin`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-plugin.md)
-- [`wikiops-sdk contracts API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/contracts.md)
+- [`docops-sdk Write A Plugin`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-plugin.md)
+- [`docops-sdk contracts API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/contracts.md)
 
 This page documents the additional runtime behavior of the host.
 
@@ -14,14 +14,14 @@ This page documents the additional runtime behavior of the host.
 The host discovers plugins through the SDK-defined entry point group:
 
 ```text
-wikiops.plugins
+docops.plugins
 ```
 
 The entry point target is expected to be a plugin class that the host can instantiate.
 
 ## Contract Expectations
 
-The plugin must structurally conform to `DocumentationPlugin` from `wikiops_sdk.contracts`.
+The plugin must structurally conform to `DocumentationPlugin` from `docops_sdk.contracts`.
 
 That means the host expects:
 
@@ -40,7 +40,7 @@ During plugin loading, the host calls the SDK compatibility helper for the plugi
 
 The host follows the SDK compatibility behavior rather than redefining its own version policy.
 
-That means strictness is aligned with the SDK behavior, including `WIKIOPS_SDK_STRICT_COMPAT`.
+That means strictness is aligned with the SDK behavior, including `DOCOPS_SDK_STRICT_COMPAT`.
 
 ## Resource Injection
 
@@ -126,7 +126,7 @@ Recommended practice:
 
 ## Common Mistakes To Avoid
 
-- importing host internals instead of relying on `wikiops-sdk`
+- importing host internals instead of relying on `docops-sdk`
 - hardcoding provider-specific persistence behavior into the plugin
 - bypassing `required_ref_aliases(...)` and trying to resolve provider details manually
 - assuming plugin resource paths start inside a fixed `resources/` root
@@ -137,4 +137,4 @@ Recommended practice:
 - [`../sdk-relationship.md`](../sdk-relationship.md)
 - [`../execution-flow.md`](../execution-flow.md)
 - [`../reference/internal-boundaries.md`](../reference/internal-boundaries.md)
-- [`wikiops-sdk Write A Plugin`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-plugin.md)
+- [`docops-sdk Write A Plugin`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-plugin.md)

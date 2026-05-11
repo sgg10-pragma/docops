@@ -4,12 +4,12 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from wikiops.core.config_loader import ConfigLoader, ProfileDefinition
-from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
-from wikiops.core.provider_manager import ProviderManager
-from wikiops.core.reference_resolver import ReferenceResolver
-from wikiops_sdk import ensure_python_compatible
-from wikiops_sdk.domain import Document, DocumentRef, ProviderCapability, RefKind
+from docops.core.config_loader import ConfigLoader, ProfileDefinition
+from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
+from docops.core.provider_manager import ProviderManager
+from docops.core.reference_resolver import ReferenceResolver
+from docops_sdk import ensure_python_compatible
+from docops_sdk.domain import Document, DocumentRef, ProviderCapability, RefKind
 
 
 class DocumentReadResult(BaseModel):

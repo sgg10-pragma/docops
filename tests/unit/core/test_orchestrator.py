@@ -6,11 +6,11 @@ from uuid import UUID
 import pytest
 from pydantic import BaseModel, Field
 
-from wikiops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
-from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
-from wikiops.core.orchestrator import DefaultDocumentationOrchestrator
-from wikiops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
-from wikiops_sdk.domain import (
+from docops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
+from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
+from docops.core.orchestrator import DefaultDocumentationOrchestrator
+from docops_sdk.contracts import PluginConfigModel, PluginInputModel, PluginManifest
+from docops_sdk.domain import (
     ApplyResult,
     AssetPathBase,
     ChangeSet,
@@ -267,7 +267,7 @@ def _plan_with_plugin(
     )
     orchestrator = DefaultDocumentationOrchestrator()
     monkeypatch.setattr(
-        "wikiops.core.orchestrator.uuid4",
+        "docops.core.orchestrator.uuid4",
         lambda: UUID("11111111-1111-1111-1111-111111111111"),
     )
     orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
@@ -295,7 +295,7 @@ def test_init_validates_python_runtime_compatibility(monkeypatch: pytest.MonkeyP
     called = {"count": 0}
 
     monkeypatch.setattr(
-        "wikiops.core.orchestrator.ensure_python_compatible",
+        "docops.core.orchestrator.ensure_python_compatible",
         lambda: called.__setitem__("count", called["count"] + 1),
     )
 
@@ -369,7 +369,7 @@ def test_plan_internal_builds_context_and_uses_plugin_config_fallbacks(
     plugin = RecordingPlugin()
     orchestrator = DefaultDocumentationOrchestrator()
     monkeypatch.setattr(
-        "wikiops.core.orchestrator.uuid4",
+        "docops.core.orchestrator.uuid4",
         lambda: UUID("11111111-1111-1111-1111-111111111111"),
     )
     orchestrator.provider_manager = SimpleNamespace(create=lambda *_args: provider)
@@ -562,7 +562,7 @@ def test_plan_internal_warns_when_local_asset_roots_are_deactivated(
         "default",
         plugin.manifest.plugin_id,
         {"title": "Example"},
-        config_path=str(tmp_path / "wikiops.yaml"),
+        config_path=str(tmp_path / "docops.yaml"),
         input_path=str(tmp_path / "input.yaml"),
     )
 
@@ -611,7 +611,7 @@ def test_plan_internal_rejects_local_asset_sources_outside_allowed_roots(
             "default",
             plugin.manifest.plugin_id,
             {"title": "Example"},
-            config_path=str(tmp_path / "wikiops.yaml"),
+            config_path=str(tmp_path / "docops.yaml"),
             input_path=str(tmp_path / "input.yaml"),
         )
 

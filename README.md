@@ -1,12 +1,12 @@
-# wikiops
+# docops
 
-`wikiops` is the host application and CLI runtime for the WikiOps ecosystem.
+`docops` is the host application and CLI runtime for the DocOps ecosystem.
 
-It orchestrates documentation automation workflows around `wikiops-sdk` by loading configuration, discovering plugins and providers, building execution context, rendering previews, and applying planned changes.
+It orchestrates documentation automation workflows around `docops-sdk` by loading configuration, discovering plugins and providers, building execution context, rendering previews, and applying planned changes.
 
 ## What This Repository Contains
 
-- A command-line interface for WikiOps execution workflows.
+- A command-line interface for DocOps execution workflows.
 - The host orchestrator that coordinates planning and apply flows.
 - Runtime loading for plugins and providers through Python entry points.
 - YAML configuration loading for providers, profiles, refs, and plugin config.
@@ -21,20 +21,20 @@ It orchestrates documentation automation workflows around `wikiops-sdk` by loadi
 - Built-in documentation plugins.
 - Project-specific documentation business logic.
 
-Those concerns belong to `wikiops-sdk` and external plugin repositories.
+Those concerns belong to `docops-sdk` and external plugin repositories.
 
-## Relationship To `wikiops-sdk`
+## Relationship To `docops-sdk`
 
-The WikiOps ecosystem is intentionally split across repositories:
+The DocOps ecosystem is intentionally split across repositories:
 
 ```text
 plugin -> sdk <- host
 provider -> sdk <- host
 ```
 
-- `wikiops-sdk`
+- `docops-sdk`
   - defines the shared contracts, domain models, and compatibility helpers
-- `wikiops`
+- `docops`
   - orchestrates execution around those SDK contracts
 - plugins
   - implement documentation planning logic
@@ -43,14 +43,28 @@ provider -> sdk <- host
 
 Canonical SDK documentation lives in the separate SDK repository:
 
-- [`wikiops-sdk README`](https://github.com/sgg10/wikiops-sdk/blob/main/README.md)
-- [`wikiops-sdk architecture`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/architecture.md)
-- [`wikiops-sdk contracts API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/contracts.md)
-- [`wikiops-sdk domain API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/domain.md)
+- [`docops-sdk README`](https://github.com/sgg10-pragma/docops-sdk/blob/main/README.md)
+- [`docops-sdk architecture`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/architecture.md)
+- [`docops-sdk contracts API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/contracts.md)
+- [`docops-sdk domain API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/domain.md)
+
+## Installation
+
+Install from the GitHub repository URL or from a locally built wheel:
+
+```bash
+# From GitHub (requires network access)
+pip install git+https://github.com/sgg10-pragma/docops.git
+
+# From a locally built wheel
+pip install dist/docops-1.0.0-py3-none-any.whl
+```
+
+Note: no auto-publish CI exists; there is no release on PyPI. Versioning is manual via `pyproject.toml`.
 
 ## Quick Start
 
-Install the host and its runtime dependencies:
+For local development, install the host and its runtime dependencies:
 
 ```bash
 poetry install --with test
@@ -59,15 +73,15 @@ poetry install --with test
 Inspect the currently available extensions:
 
 ```bash
-poetry run wikiops plugins
-poetry run wikiops providers
+poetry run docops plugins
+poetry run docops providers
 ```
 
 The host currently ships with a built-in provider implementation:
 
 - `azure_devops_wiki`
 
-Plugins are expected to be installed separately through Python packages that expose the `wikiops.plugins` entry point group.
+Plugins are expected to be installed separately through Python packages that expose the `docops.plugins` entry point group.
 
 ### Example Configuration
 
@@ -103,11 +117,11 @@ team_name: Platform
 
 ### Plan A Run
 
-Replace `acme.team-docs` with an installed plugin ID shown by `wikiops plugins`.
+Replace `acme.team-docs` with an installed plugin ID shown by `docops plugins`.
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml
@@ -121,8 +135,8 @@ This prints:
 ### Apply A Run
 
 ```bash
-poetry run wikiops run \
-  --config wikiops.yaml \
+poetry run docops run \
+  --config docops.yaml \
   --profile default \
   --plugin acme.team-docs \
   --input input.yaml \
@@ -133,7 +147,7 @@ On apply, the CLI also prints the provider `ApplyResult` and exits with code `1`
 
 ## Plugin Resources
 
-`wikiops` injects a `PluginResourceProvider` when loading plugin entry points.
+`docops` injects a `PluginResourceProvider` when loading plugin entry points.
 
 - Resource paths are relative to the plugin package root.
 - The host does not assume a fixed `resources/` directory.

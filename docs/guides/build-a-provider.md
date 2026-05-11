@@ -1,11 +1,11 @@
 # Build A Provider For This Host
 
-This guide explains the host-side expectations for provider packages loaded by `wikiops`.
+This guide explains the host-side expectations for provider packages loaded by `docops`.
 
 For the canonical provider contract, read the SDK guide first:
 
-- [`wikiops-sdk Write A Provider`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-provider.md)
-- [`wikiops-sdk contracts API`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/api/contracts.md)
+- [`docops-sdk Write A Provider`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-provider.md)
+- [`docops-sdk contracts API`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/api/contracts.md)
 
 This page documents the additional runtime behavior of the host.
 
@@ -14,7 +14,7 @@ This page documents the additional runtime behavior of the host.
 The host discovers providers through the SDK-defined entry point group:
 
 ```text
-wikiops.providers
+docops.providers
 ```
 
 The current host expects each entry point target to be a provider factory class that can be instantiated with no arguments.
@@ -42,7 +42,7 @@ class DemoProviderFactory:
 
 ### Important Note
 
-This factory convention belongs to the host. It is not defined by `wikiops-sdk`.
+This factory convention belongs to the host. It is not defined by `docops-sdk`.
 
 The SDK defines the provider contract itself. The host defines how provider implementations are discovered and instantiated.
 
@@ -66,7 +66,7 @@ This keeps the current host compatible with older provider factory shapes while 
 
 ## Contract Expectations
 
-The resulting provider instance must structurally conform to `DocumentProvider` from `wikiops_sdk.contracts`.
+The resulting provider instance must structurally conform to `DocumentProvider` from `docops_sdk.contracts`.
 
 That means the host expects:
 
@@ -119,4 +119,4 @@ Recommended practice:
 - [`../sdk-relationship.md`](../sdk-relationship.md)
 - [`../execution-flow.md`](../execution-flow.md)
 - [`../reference/azure-devops-wiki.md`](../reference/azure-devops-wiki.md)
-- [`wikiops-sdk Write A Provider`](https://github.com/sgg10/wikiops-sdk/blob/main/docs/guides/write-a-provider.md)
+- [`docops-sdk Write A Provider`](https://github.com/sgg10-pragma/docops-sdk/blob/main/docs/guides/write-a-provider.md)

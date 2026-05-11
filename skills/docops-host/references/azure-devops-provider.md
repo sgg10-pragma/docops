@@ -74,13 +74,13 @@ Do not assume ID-based execution support.
 Preferred by alias:
 
 ```bash
-wikiops docs get -c config.yaml -p test --alias sample_dp
+docops docs get -c config.yaml -p test --alias sample_dp
 ```
 
 Ad hoc by path:
 
 ```bash
-wikiops docs get -c config.yaml -p test --path "/Engineering/Platform/Runbook"
+docops docs get -c config.yaml -p test --path "/Engineering/Platform/Runbook"
 ```
 
 ## Asset behavior
@@ -110,5 +110,5 @@ uses:
 An agent can read the current tribe page with:
 
 ```bash
-wikiops docs get -c config.yaml -p test --alias sample_tribe --output markdown
+docops docs get -c config.yaml -p test --alias sample_tribe --output markdown
 ```

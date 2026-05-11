@@ -6,8 +6,8 @@ from typing import Any, Callable
 import pytest
 from typer.testing import CliRunner
 
-from wikiops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
-from wikiops_sdk.domain import (
+from docops.core.config_loader import AppConfig, ProfileDefinition, ProviderDefinition
+from docops_sdk.domain import (
     ApplyResult,
     AppliedOperationResult,
     ChangeSet,

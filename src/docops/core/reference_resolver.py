@@ -1,6 +1,6 @@
-from wikiops.core.config_loader import ProfileDefinition
-from wikiops.core.exceptions import ReferenceResolutionError
-from wikiops_sdk.domain import DocumentRef
+from docops.core.config_loader import ProfileDefinition
+from docops.core.exceptions import ReferenceResolutionError
+from docops_sdk.domain import DocumentRef
 
 
 class ReferenceResolver:

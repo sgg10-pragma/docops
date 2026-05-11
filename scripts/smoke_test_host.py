@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run a basic smoke test against an installed wikiops distribution."""
+"""Run a basic smoke test against an installed docops distribution."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ EXPECTED_PROVIDER_ENTRYPOINT = "azure_devops_wiki"
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Exercise the installed wikiops host surface after installation."
+        description="Exercise the installed docops host surface after installation."
     )
     parser.add_argument(
         "--expected-distribution-version",
         required=False,
-        help="Expected installed version of the wikiops distribution.",
+        help="Expected installed version of the docops distribution.",
     )
     return parser.parse_args()
 
@@ -30,34 +30,34 @@ def assert_distribution_version(expected_version: str | None) -> None:
     if expected_version is None:
         return
 
-    installed_version = distribution_version("wikiops")
+    installed_version = distribution_version("docops")
     if installed_version != expected_version:
         raise RuntimeError(
-            f"Installed wikiops version '{installed_version}' does not match "
+            f"Installed docops version '{installed_version}' does not match "
             f"expected version '{expected_version}'."
         )
 
 
 def assert_imports() -> None:
-    wikiops = import_module("wikiops")
-    cli_app = import_module("wikiops.cli.app")
-    provider_module = import_module("wikiops.providers.azure_devops")
+    docops = import_module("docops")
+    cli_app = import_module("docops.cli.app")
+    provider_module = import_module("docops.providers.azure_devops")
 
-    assert hasattr(wikiops, "__version__")
+    assert hasattr(docops, "__version__")
     assert cli_app.app is not None
     assert hasattr(provider_module, "AzureDevOpsWikiProviderFactory")
 
 
 def assert_entry_points() -> None:
-    provider_groups = entry_points(group="wikiops.providers")
+    provider_groups = entry_points(group="docops.providers")
     names = {entry_point.name for entry_point in provider_groups}
     assert EXPECTED_PROVIDER_ENTRYPOINT in names
 
 
 def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
-    executable = shutil.which("wikiops")
+    executable = shutil.which("docops")
     if executable is None:
-        raise RuntimeError("Installed wikiops console script was not found on PATH.")
+        raise RuntimeError("Installed docops console script was not found on PATH.")
 
     return subprocess.run(
         [executable, *args],
@@ -71,7 +71,7 @@ def assert_cli_behavior() -> None:
     help_result = run_cli("--help")
     if help_result.returncode != 0:
         raise RuntimeError(help_result.stderr or help_result.stdout)
-    assert "WikiOps CLI" in help_result.stdout
+    assert "DocOps CLI" in help_result.stdout
     assert "docs" in help_result.stdout
 
     providers_result = run_cli("providers")
@@ -90,8 +90,8 @@ def assert_cli_behavior() -> None:
 
 
 def assert_distribution_metadata() -> None:
-    package = distribution("wikiops")
-    assert package.metadata["Name"] == "wikiops"
+    package = distribution("docops")
+    assert package.metadata["Name"] == "docops"
 
 
 def main() -> int:
@@ -102,7 +102,7 @@ def main() -> int:
     assert_entry_points()
     assert_cli_behavior()
 
-    print("wikiops smoke test completed successfully.")
+    print("docops smoke test completed successfully.")
     return 0
 
 

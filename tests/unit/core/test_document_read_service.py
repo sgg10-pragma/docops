@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from wikiops.core.document_reader import DocumentReader
-from wikiops.core.exceptions import ConfigurationError, ProviderCompatibilityError
-from wikiops_sdk.domain import ProviderCapability, RefKind
+from docops.core.document_reader import DocumentReader
+from docops.core.exceptions import ConfigurationError, ProviderCompatibilityError
+from docops_sdk.domain import ProviderCapability, RefKind
 
 
 class DemoProvider:
@@ -45,7 +45,7 @@ class DemoProvider:
 
 
 def _make_reader(monkeypatch: pytest.MonkeyPatch) -> DocumentReader:
-    monkeypatch.setattr("wikiops.core.document_reader.ensure_python_compatible", lambda: None)
+    monkeypatch.setattr("docops.core.document_reader.ensure_python_compatible", lambda: None)
     return DocumentReader()
 
 
@@ -55,7 +55,7 @@ def test_init_validates_python_runtime_compatibility(
     called = {"count": 0}
 
     monkeypatch.setattr(
-        "wikiops.core.document_reader.ensure_python_compatible",
+        "docops.core.document_reader.ensure_python_compatible",
         lambda: called.__setitem__("count", called["count"] + 1),
     )
 
